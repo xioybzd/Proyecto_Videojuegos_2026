@@ -2,63 +2,57 @@ import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Image }
 import { useRouter } from 'expo-router';
 import { useContext } from 'react';
 import { GameContext } from '@/context/GameContext';
+import { Fonts } from '@/constants/fonts';
+import { chapters } from '@/data/chapters';
+import type { Chapter } from '@/data/types';
 
 const { width } = Dimensions.get('window');
 
 export default function Capitulos() {
   const router = useRouter();
-
   const { recuerdos } = useContext(GameContext);
 
-  //  condición de desbloqueo
-  const cap2Desbloqueado = recuerdos.some(r => r.id === 'cap1_recuerdo1');
+  const estaDesbloqueado = (capitulo: Chapter) => {
+    if (!capitulo.requeridoRecuerdoId) return true;
+    return recuerdos.some((r) => r.id === capitulo.requeridoRecuerdoId);
+  };
 
-  const capitulos = [
-    {
-      id: '1',
-      titulo: 'Capítulo 1',
-      descripcion: 'Solo un día cualquiera en mi vida...',
-      imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.png'),
-      desbloqueado: true,
-    },
-    {
-      id: '2',
-      titulo: 'Capítulo 2',
-      descripcion: cap2Desbloqueado ? 'Continúa la historia...' : 'Bloqueado',
-      imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.png'),
-      desbloqueado: cap2Desbloqueado,
-    },
-  ];
+  const renderItem = ({ item }: { item: Chapter }) => {
+    const desbloqueado = estaDesbloqueado(item);
+    const puedeJugar = desbloqueado && item.ruta;
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={item.imagen} style={styles.image} />
+    return (
+      <View style={styles.card}>
+        <Image source={item.imagen} style={styles.image} />
 
-      <Text style={styles.title}>{item.titulo}</Text>
-      <Text style={styles.desc}>{item.descripcion}</Text>
-
-      <TouchableOpacity
-        disabled={!item.desbloqueado}
-        style={[
-          styles.button,
-          { backgroundColor: item.desbloqueado ? '#7600fd' : '#555' },
-        ]}
-        onPress={() => {
-          if (item.id === '1') router.push('/capitulo/cap1');
-          if (item.id === '2') router.push('/capitulo/cap2');
-        }}
-      >
-        <Text style={styles.buttonText}>
-          {item.desbloqueado ? 'Jugar' : 'Bloqueado 🔒'}
+        <Text style={styles.title}>{item.titulo}</Text>
+        <Text style={styles.desc}>
+          {desbloqueado ? item.descripcion : 'Bloqueado'}
         </Text>
-      </TouchableOpacity>
-    </View>
-  );
+        <Text style={styles.memory}>{item.memoria}% memoria</Text>
+
+        <TouchableOpacity
+          disabled={!puedeJugar}
+          style={[
+            styles.button,
+            { backgroundColor: puedeJugar ? '#7600fd' : '#555' },
+          ]}
+          onPress={() => {
+            if (item.ruta) router.push(item.ruta as any);
+          }}
+        >
+          <Text style={styles.buttonText}>
+            {puedeJugar ? 'Jugar' : 'Bloqueado'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={capitulos}
+        data={chapters}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         horizontal
@@ -87,14 +81,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 26,
+    fontFamily: Fonts.sunshine,
+    fontSize: 36,
     color: 'white',
-    fontWeight: 'bold',
   },
   desc: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 22,
     color: '#aaa',
     marginTop: 10,
     textAlign: 'center',
+  },
+  memory: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 20,
+    color: '#c084b6',
+    marginTop: 8,
   },
   button: {
     marginTop: 20,
@@ -103,7 +105,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   buttonText: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 22,
     color: 'white',
-    fontWeight: 'bold',
   },
 });

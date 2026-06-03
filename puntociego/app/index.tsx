@@ -10,7 +10,8 @@ import {
 import Slider from '@react-native-community/slider';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Video } from 'expo-av';
+import { ResizeMode, Video } from 'expo-av';
+import { Fonts } from '@/constants/fonts';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -99,7 +100,7 @@ export default function HomeScreen() {
         ref={videoRef}
         source={require('@/assets/videos/portada.mp4')}
         style={styles.background}
-        resizeMode="cover"
+        resizeMode={ResizeMode.COVER}
         isLooping
         shouldPlay
       />
@@ -280,10 +281,10 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 14,
+    fontFamily: Fonts.sunshine,
+    fontSize: 20,
     color: '#6b4c6b',
     marginBottom: 10,
-    fontWeight: '600',
   },
 
   barBackground: {
@@ -301,8 +302,9 @@ const styles = StyleSheet.create({
   },
 
   close: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 20,
     marginTop: 25,
     color: '#6b4c6b',
-    fontWeight: '600',
   },
 });

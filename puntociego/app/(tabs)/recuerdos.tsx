@@ -5,9 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameContext } from '@/context/GameContext';
+import { Fonts } from '@/constants/fonts';
+import { getLocationById } from '@/data/locations';
 
 export default function RecuerdosScreen() {
   const { recuerdos } = useContext(GameContext);
@@ -30,15 +33,10 @@ export default function RecuerdosScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-
-      {/* HEADER */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-        <Text style={styles.title}>
-          🧠 Recuerdos ({recuerdos.length})
-        </Text>
+        <Text style={styles.title}>Recuerdos ({recuerdos.length})</Text>
       </View>
 
-      {/* LISTA */}
       <ScrollView
         contentContainerStyle={{
           padding: 20,
@@ -46,25 +44,26 @@ export default function RecuerdosScreen() {
         }}
       >
         {recuerdos.length === 0 ? (
-          <Text style={styles.contentText}>
-            No hay recuerdos aún...
-          </Text>
+          <Text style={styles.contentText}>No hay recuerdos aun...</Text>
         ) : (
-          recuerdos.map((r) => (
-            <View key={r.id} style={styles.card}>
-              <Text style={styles.cardTitle}>{r.titulo}</Text>
-              <Text style={styles.cardDesc}>{r.descripcion}</Text>
-            </View>
-          ))
+          recuerdos.map((r) => {
+            const lugar = getLocationById(r.lugarId);
+
+            return (
+              <View key={r.id} style={styles.card}>
+                <Image source={r.imagen} style={styles.cardImage} />
+                <Text style={styles.cardTitle}>{r.titulo}</Text>
+                <Text style={styles.cardDesc}>{r.descripcion}</Text>
+                {lugar && <Text style={styles.place}>Encontrado en: {lugar.nombre}</Text>}
+              </View>
+            );
+          })
         )}
 
-        {/* 🔥 BOTÓN AHORA DENTRO DEL SCROLL (FIX REAL) */}
         <TouchableOpacity style={styles.button} onPress={playClick}>
           <Text style={styles.buttonText}>Explorar recuerdos</Text>
         </TouchableOpacity>
-
       </ScrollView>
-
     </SafeAreaView>
   );
 }
@@ -81,13 +80,14 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: Fonts.sunshine,
+    fontSize: 31,
     color: 'white',
   },
 
   contentText: {
-    fontSize: 18,
+    fontFamily: Fonts.sunshine,
+    fontSize: 24,
     color: 'gray',
     textAlign: 'center',
     marginTop: 40,
@@ -97,17 +97,32 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 15,
     borderRadius: 10,
+    marginBottom: 12,
+  },
+
+  cardImage: {
+    width: '100%',
+    height: 160,
+    borderRadius: 8,
     marginBottom: 10,
   },
 
   cardTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontFamily: Fonts.sunshine,
+    fontSize: 22,
   },
 
   cardDesc: {
-    fontSize: 14,
+    fontFamily: Fonts.sunshine,
+    fontSize: 19,
     color: 'gray',
+  },
+
+  place: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 18,
+    color: '#7600fd',
+    marginTop: 8,
   },
 
   button: {
@@ -119,7 +134,8 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 20,
     color: 'white',
-    fontWeight: '600',
   },
 });

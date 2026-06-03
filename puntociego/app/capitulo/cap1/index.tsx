@@ -1,41 +1,30 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import { Fonts } from '@/constants/fonts';
+import { cap1Scenes } from '@/data/chapters';
+import { getClueById } from '@/data/clues';
 
 export default function Cap1() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
 
-  const escenas = [
-    {
-      imagen: require('@/assets/images/capituloimgs/capitulo1/escena1.png'),
-      texto: 'Desperté sin recordar nada...',
-    },
-    {
-      imagen: require('@/assets/images/capituloimgs/capitulo1/escena2.png'),
-      texto: 'Mi cabeza dolía demasiado...',
-    },
-    {
-      imagen: require('@/assets/images/capituloimgs/capitulo1/escena3.png'),
-      texto: '¿Dónde estoy?',
-    },
-  ];
-
   const terminarCapitulo = () => {
+    const pista = getClueById('cap1_pista1');
+    if (!pista) return;
+
     router.push({
       pathname: '/recompensa',
       params: {
-        id: 'cap1_recuerdo1',
-        titulo: 'Recuerdo borroso',
-        descripcion: 'Sentiste que ya habías estado aquí...',
-        tipo: 'recuerdo', // 👈 CLAVE
+        id: pista.id,
+        tipo: 'pista',
       },
     });
   };
 
   const siguienteEscena = () => {
     setEscena((prev) => {
-      if (prev < escenas.length - 1) return prev + 1;
+      if (prev < cap1Scenes.length - 1) return prev + 1;
       terminarCapitulo();
       return prev;
     });
@@ -47,7 +36,11 @@ export default function Cap1() {
 
   const manejarToque = (e: any) => {
     const x = e.nativeEvent.locationX;
-    x > width / 2 ? siguienteEscena() : anteriorEscena();
+    if (x > width / 2) {
+      siguienteEscena();
+    } else {
+      anteriorEscena();
+    }
   };
 
   return (
@@ -56,9 +49,9 @@ export default function Cap1() {
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <TouchableOpacity style={styles.touchableArea} onPress={manejarToque}>
-        <Image source={escenas[escena].imagen} style={styles.image} />
+        <Image source={cap1Scenes[escena].imagen} style={styles.image} />
         <View style={styles.dialogo}>
-          <Text style={styles.texto}>{escenas[escena].texto}</Text>
+          <Text style={styles.texto}>{cap1Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -76,5 +69,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(173, 83, 83, 0.7)',
     padding: 20,
   },
-  texto: { color: 'white' },
+  texto: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 25,
+    color: 'white',
+  },
 });

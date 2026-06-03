@@ -3,6 +3,7 @@ import { Tabs, useRouter } from 'expo-router';
 import { View, TouchableOpacity, Image, StyleSheet, Text } from 'react-native';
 import { HapticTab } from '@/components/haptic-tab';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Fonts } from '@/constants/fonts';
 
 export default function TabLayout() {
   const router = useRouter();
@@ -78,8 +79,9 @@ export default function TabLayout() {
           },
 
           tabBarLabelStyle: {
+            fontFamily: Fonts.sunshine,
             marginTop: -10,
-            fontSize: 14,
+            fontSize: 17,
           },
 
           headerShown: false,
@@ -163,9 +165,9 @@ const styles = StyleSheet.create({
   },
 
   backIcon: {
-    fontSize: 25,
+    fontFamily: Fonts.sunshine,
+    fontSize: 34,
     color: 'black',
-    fontWeight: 'bold',
   },
 
   iconImage: {
