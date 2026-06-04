@@ -11,7 +11,6 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
-import { getLocationById } from '@/data/locations';
 
 export default function PistasScreen() {
   const { pistas } = useContext(GameContext);
@@ -47,20 +46,15 @@ export default function PistasScreen() {
         {pistas.length === 0 ? (
           <Text style={styles.contentText}>No hay pistas aun...</Text>
         ) : (
-          pistas.map((p) => {
-            const lugar = getLocationById(p.lugarId);
-
-            return (
+          pistas.map((p) => (
               <View key={p.id} style={styles.card}>
                 <Image source={p.imagen} style={styles.cardImage} />
                 <View style={styles.cardBody}>
                   <Text style={styles.cardTitle}>{p.titulo}</Text>
                   <Text style={styles.cardDesc}>{p.descripcion}</Text>
-                  {lugar && <Text style={styles.place}>Ir a: {lugar.nombre}</Text>}
                 </View>
               </View>
-            );
-          })
+          ))
         )}
 
         <TouchableOpacity style={styles.button} onPress={playClick}>
@@ -124,13 +118,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sunshine,
     fontSize: 19,
     color: 'gray',
-  },
-
-  place: {
-    fontFamily: Fonts.sunshine,
-    fontSize: 18,
-    color: '#7600fd',
-    marginTop: 8,
   },
 
   button: {

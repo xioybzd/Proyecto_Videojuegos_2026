@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
 import { chapters } from '@/data/chapters';
@@ -11,6 +11,18 @@ const { width } = Dimensions.get('window');
 export default function Capitulos() {
   const router = useRouter();
   const { recuerdos } = useContext(GameContext);
+
+  useEffect(() => {
+    const pauseMainMusic = async () => {
+      try {
+        await (global as any).bgSound?.current?.pauseAsync();
+      } catch (e) {
+        console.log('error pause music:', e);
+      }
+    };
+
+    pauseMainMusic();
+  }, []);
 
   const estaDesbloqueado = (capitulo: Chapter) => {
     if (!capitulo.requeridoRecuerdoId) return true;
@@ -23,7 +35,7 @@ export default function Capitulos() {
 
     return (
       <View style={styles.card}>
-        <Image source={item.imagen} style={styles.image} />
+        <Image source={item.imagen} style={styles.image} resizeMode="cover" />
 
         <Text style={styles.title}>{item.titulo}</Text>
         <Text style={styles.desc}>

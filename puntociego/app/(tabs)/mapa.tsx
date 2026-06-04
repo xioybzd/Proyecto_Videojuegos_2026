@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Location from 'expo-location';
 import * as Haptics from 'expo-haptics';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { DEMO_SKIP_LOCATION_CHECKS } from '@/config/demo';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
 import { locations } from '@/data/locations';
@@ -14,8 +15,8 @@ type PlayerLocation = {
 };
 
 const UNMSM_REGION: Region = {
-  latitude: -12.0589,
-  longitude: -77.0824,
+  latitude: -12.05574,
+  longitude: -77.08559,
   latitudeDelta: 0.006,
   longitudeDelta: 0.006,
 };
@@ -47,6 +48,7 @@ export default function MapaScreen() {
   const [playerLocation, setPlayerLocation] = useState<PlayerLocation | null>(null);
   const [permissionError, setPermissionError] = useState('');
   const [loadingLocation, setLoadingLocation] = useState(true);
+  const locationSubscription = useRef<Location.LocationSubscription | null>(null);
 
   const pistaActiva = pistas.find((p) => p.id === 'cap1_pista1');
   const recuerdoDesbloqueado = recuerdos.some((r) => r.id === 'cap1_recuerdo1');
@@ -79,56 +81,95 @@ export default function MapaScreen() {
     }
   };
 
-  useEffect(() => {
-    let subscription: Location.LocationSubscription | null = null;
+  const startLocation = async () => {
+    if (DEMO_SKIP_LOCATION_CHECKS) {
+      setLoadingLocation(false);
+      setPermissionError('');
+      return;
+    }
 
-    const startLocation = async () => {
+    setLoadingLocation(true);
+    setPermissionError('');
+
+    try {
+      const servicesEnabled = await Location.hasServicesEnabledAsync();
+
+      if (!servicesEnabled) {
+        setPermissionError('Activa el GPS del celular y vuelve a intentar.');
+        setLoadingLocation(false);
+        return;
+      }
+
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+        setPermissionError('Dale permiso de ubicacion a Expo Go para jugar con GPS.');
+        setLoadingLocation(false);
+        return;
+      }
+
+      const cached = await Location.getLastKnownPositionAsync({
+        maxAge: 120000,
+        requiredAccuracy: 250,
+      });
+
+      if (cached) {
+        setPlayerLocation({
+          latitude: cached.coords.latitude,
+          longitude: cached.coords.longitude,
+        });
+      }
+
       try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-
-        if (status !== 'granted') {
-          setPermissionError('Activa el permiso de ubicacion para jugar con GPS.');
-          setLoadingLocation(false);
-          return;
-        }
-
         const current = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
+          accuracy: Location.Accuracy.Balanced,
         });
 
         setPlayerLocation({
           latitude: current.coords.latitude,
           longitude: current.coords.longitude,
         });
-
-        subscription = await Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.High,
-            distanceInterval: 3,
-          },
-          (location) => {
-            setPlayerLocation({
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            });
-          }
-        );
       } catch (e) {
-        console.log('error location:', e);
-        setPermissionError('No pude leer tu ubicacion. Revisa GPS y permisos.');
-      } finally {
-        setLoadingLocation(false);
-      }
-    };
+        console.log('error current location:', e);
 
+        if (!cached) {
+          setPermissionError('No pude leer tu ubicacion. Sal a un lugar abierto o toca reintentar.');
+        }
+      }
+
+      locationSubscription.current?.remove();
+      locationSubscription.current = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.Balanced,
+          timeInterval: 4000,
+          distanceInterval: 5,
+        },
+        (location) => {
+          setPlayerLocation({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          });
+          setPermissionError('');
+        }
+      );
+    } catch (e) {
+      console.log('error location:', e);
+      setPermissionError('No pude activar el GPS. Revisa permisos y toca reintentar.');
+    } finally {
+      setLoadingLocation(false);
+    }
+  };
+
+  useEffect(() => {
     startLocation();
 
     return () => {
-      subscription?.remove();
+      locationSubscription.current?.remove();
     };
   }, []);
 
   useEffect(() => {
+    if (DEMO_SKIP_LOCATION_CHECKS) return;
     if (!estaEnObjetivo || !pistaActiva || recuerdoDesbloqueado) return;
 
     const unlock = async () => {
@@ -163,64 +204,60 @@ export default function MapaScreen() {
         showsUserLocation
         showsMyLocationButton
       >
-        {locations.map((location) => {
-          if (!location.coordenadas) return null;
+        {ubicacionObjetivo?.coordenadas && !recuerdoDesbloqueado && (
+          <>
+            <Marker
+              coordinate={ubicacionObjetivo.coordenadas}
+              title="Punto de investigacion"
+              description="Hay algo esperando por Azula."
+              pinColor="#c084b6"
+            />
 
-          const isTarget = location.id === ubicacionObjetivo?.id && !recuerdoDesbloqueado;
-          const isVisited = recuerdos.some((r) => r.lugarId === location.id);
-
-          return (
-            <React.Fragment key={location.id}>
-              <Marker
-                coordinate={location.coordenadas}
-                title={location.nombre}
-                description={location.descripcion}
-                pinColor={isVisited ? '#5fcf7a' : isTarget ? '#c084b6' : '#7600fd'}
-              />
-
-              {isTarget && (
-                <Circle
-                  center={location.coordenadas}
-                  radius={location.radioMetros}
-                  strokeColor="rgba(192,132,182,0.9)"
-                  fillColor="rgba(192,132,182,0.22)"
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
+            <Circle
+              center={ubicacionObjetivo.coordenadas}
+              radius={ubicacionObjetivo.radioMetros}
+              strokeColor="rgba(192,132,182,0.9)"
+              fillColor="rgba(192,132,182,0.22)"
+            />
+          </>
+        )}
       </MapView>
 
-      <View style={styles.statusPanel}>
-        <Text style={styles.title}>UNMSM</Text>
-
-        {loadingLocation ? (
+      {(DEMO_SKIP_LOCATION_CHECKS || loadingLocation || permissionError || ubicacionObjetivo) && (
+        <View style={styles.statusPanel}>
+          {DEMO_SKIP_LOCATION_CHECKS ? (
+          <>
+            <Text style={styles.statusText}>Modo expo activo</Text>
+            <Text style={styles.detailText}>
+              Las ubicaciones no bloquean la historia durante la presentacion.
+            </Text>
+          </>
+        ) : loadingLocation ? (
           <View style={styles.loadingRow}>
             <ActivityIndicator color="white" />
             <Text style={styles.statusText}>Buscando tu ubicacion...</Text>
           </View>
         ) : permissionError ? (
-          <Text style={styles.statusText}>{permissionError}</Text>
-        ) : ubicacionObjetivo ? (
           <>
-            <Text style={styles.statusText}>Objetivo: {ubicacionObjetivo.nombre}</Text>
-            <Text style={styles.detailText}>
-              {distanciaObjetivo === null
-                ? 'Acercate al punto marcado para desbloquear el recuerdo.'
-                : estaEnObjetivo
-                  ? 'Recuerdo desbloqueado'
-                  : `Estas a ${Math.round(distanciaObjetivo)} m del recuerdo.`}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text style={styles.statusText}>Completa el Capitulo 1 para obtener tu primera pista.</Text>
-            <TouchableOpacity style={styles.chapterButton} onPress={handlePlay}>
-              <Text style={styles.chapterText}>Abrir capitulos</Text>
+            <Text style={styles.statusText}>{permissionError}</Text>
+            <TouchableOpacity style={styles.retryButton} onPress={startLocation}>
+              <Text style={styles.retryText}>Reintentar GPS</Text>
             </TouchableOpacity>
           </>
-        )}
-      </View>
+        ) : ubicacionObjetivo ? (
+          <>
+            <Text style={styles.statusText}>Punto de investigacion activo</Text>
+            <Text style={styles.detailText}>
+              {distanciaObjetivo === null
+                ? 'Usa la pista y acercate al punto marcado para desbloquear el recuerdo.'
+                : estaEnObjetivo
+                  ? 'Recuerdo desbloqueado'
+                  : `Estas a ${Math.round(distanciaObjetivo)} m de una memoria escondida.`}
+            </Text>
+          </>
+          ) : null}
+        </View>
+      )}
 
       <TouchableOpacity
         style={styles.playButton}
@@ -258,12 +295,6 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.22)',
   },
 
-  title: {
-    fontFamily: Fonts.sunshine,
-    fontSize: 30,
-    color: 'white',
-  },
-
   loadingRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -285,19 +316,19 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  chapterButton: {
-    backgroundColor: '#7600fd',
-    paddingHorizontal: 22,
-    paddingVertical: 10,
-    borderRadius: 12,
-    marginTop: 12,
+  retryButton: {
     alignSelf: 'flex-start',
+    backgroundColor: '#c084b6',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginTop: 10,
   },
 
-  chapterText: {
+  retryText: {
     fontFamily: Fonts.sunshine,
-    fontSize: 22,
     color: 'white',
+    fontSize: 18,
   },
 
   playButton: {

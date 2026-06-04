@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   SafeAreaView,
   ScrollView,
   Image,
@@ -14,19 +13,6 @@ import { Fonts } from '@/constants/fonts';
 export default function PerfilScreen() {
   const { pistas, recuerdos, lugaresVisitados, memoriaRecuperada } = useContext(GameContext);
 
-  const playClick = async () => {
-    try {
-      const sound = (global as any).clickSound?.current;
-
-      if (sound) {
-        await sound.setVolumeAsync((global as any).sfxVolume ?? 1);
-        await sound.replayAsync();
-      }
-    } catch (e) {
-      console.log('error click:', e);
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
@@ -35,7 +21,7 @@ export default function PerfilScreen() {
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
             <Image
-              source={require('@/assets/images/fotoperfilAzula.png')}
+              source={require('@/assets/images/fotoperfilAzulaNueva.png')}
               style={styles.avatarImage}
             />
           </View>
@@ -68,12 +54,6 @@ export default function PerfilScreen() {
           </View>
         </View>
 
-        <TouchableOpacity
-          style={styles.testButton}
-          onPress={playClick}
-        >
-          <Text style={styles.testText}>Probar sonido</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -111,9 +91,9 @@ const styles = StyleSheet.create({
   },
 
   avatar: {
-    width: 126,
-    height: 126,
-    borderRadius: 63,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     backgroundColor: '#c084b6',
     alignItems: 'center',
     justifyContent: 'center',
@@ -215,16 +195,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  testButton: {
-    backgroundColor: '#c084b6',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 15,
-  },
-
-  testText: {
-    fontFamily: Fonts.sunshine,
-    fontSize: 20,
-    color: 'white',
-  },
 });

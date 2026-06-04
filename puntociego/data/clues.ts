@@ -3,11 +3,11 @@ import type { GameItem } from './types';
 export const clues: GameItem[] = [
   {
     id: 'cap1_pista1',
-    titulo: 'Fotografia extrana',
-    descripcion: 'Encontraste una foto arrugada en el suelo. Al reverso aparece una referencia al Comedor Sanmarquino.',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/escena3.png'),
+    titulo: 'Pedazo de libro',
+    descripcion: 'Un fragmento arrancado de un libro. Entre manchas rojas se alcanza a leer: "Donde las paginas guardan silencio, la verdad espera".',
+    imagen: require('@/assets/images/pista1.jpg'),
     capituloId: 'cap1',
-    lugarId: 'comedor-sanmarquino',
+    lugarId: 'biblioteca-central',
   },
   {
     id: 'cap2_pista1',

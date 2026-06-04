@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
+import { router } from 'expo-router';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
@@ -50,12 +51,24 @@ export default function RecuerdosScreen() {
             const lugar = getLocationById(r.lugarId);
 
             return (
-              <View key={r.id} style={styles.card}>
+              <TouchableOpacity
+                key={r.id}
+                style={styles.card}
+                activeOpacity={0.86}
+                onPress={async () => {
+                  await playClick();
+                  router.push({
+                    pathname: '/recuerdo',
+                    params: { id: r.id },
+                  });
+                }}
+              >
                 <Image source={r.imagen} style={styles.cardImage} />
                 <Text style={styles.cardTitle}>{r.titulo}</Text>
                 <Text style={styles.cardDesc}>{r.descripcion}</Text>
                 {lugar && <Text style={styles.place}>Encontrado en: {lugar.nombre}</Text>}
-              </View>
+                <Text style={styles.openHint}>Toca para reconstruir</Text>
+              </TouchableOpacity>
             );
           })
         )}
@@ -122,6 +135,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sunshine,
     fontSize: 18,
     color: '#7600fd',
+    marginTop: 8,
+  },
+
+  openHint: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 17,
+    color: '#c084b6',
     marginTop: 8,
   },
 

@@ -13,12 +13,12 @@ export const locations: GameLocation[] = [
   },
   {
     id: 'biblioteca-central',
-    nombre: 'Biblioteca Central',
+    nombre: 'Biblioteca Central Pedro Zulen',
     descripcion: 'Un espacio clave para reconstruir recuerdos fragmentados.',
     radioMetros: 65,
     coordenadas: {
-      latitude: -12.05892,
-      longitude: -77.08305,
+      latitude: -12.05574,
+      longitude: -77.08559,
     },
   },
   {

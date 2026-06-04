@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import { Audio } from 'expo-av';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
+import { DEMO_MODE, demoAutoUnlocks } from '@/config/demo';
 import { getClueById } from '@/data/clues';
-import { getLocationById } from '@/data/locations';
 import { getMemoryById } from '@/data/memories';
 import type { RewardType } from '@/data/types';
 
@@ -15,7 +16,34 @@ export default function Recompensa() {
   const tipo = params.tipo as RewardType;
   const id = params.id as string;
   const item = tipo === 'recuerdo' ? getMemoryById(id) : getClueById(id);
-  const lugar = getLocationById(item?.lugarId);
+
+  useEffect(() => {
+    let tingSound: Audio.Sound | null = null;
+
+    const playRewardSound = async () => {
+      try {
+        await (global as any).bgSound?.current?.pauseAsync();
+
+        const { sound } = await Audio.Sound.createAsync(
+          require('@/assets/sounds/ting.mp3'),
+          {
+            shouldPlay: true,
+            volume: (global as any).sfxVolume ?? 1,
+          }
+        );
+
+        tingSound = sound;
+      } catch (e) {
+        console.log('error reward sound:', e);
+      }
+    };
+
+    playRewardSound();
+
+    return () => {
+      tingSound?.unloadAsync();
+    };
+  }, []);
 
   const handlePress = () => {
     if (!item) {
@@ -29,6 +57,20 @@ export default function Recompensa() {
       router.replace('/(tabs)/recuerdos');
     } else {
       agregarPista(item);
+      const demoUnlock = DEMO_MODE ? demoAutoUnlocks[item.id] : undefined;
+
+      if (demoUnlock) {
+        const recuerdoDemo = getMemoryById(demoUnlock.recuerdoId);
+
+        if (recuerdoDemo) {
+          agregarRecuerdo(recuerdoDemo);
+        }
+
+        if (demoUnlock.lugarId) {
+          marcarLugarVisitado(demoUnlock.lugarId);
+        }
+      }
+
       router.replace('/(tabs)/pistas');
     }
   };
@@ -42,15 +84,15 @@ export default function Recompensa() {
       <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
         <Image
           source={item?.imagen ?? require('@/assets/images/capituloimgs/capitulo1/escena3.png')}
-          style={styles.image}
+          style={[styles.image, tipo === 'pista' && styles.clueImage]}
         />
       </TouchableOpacity>
 
-      <Text style={styles.itemTitle}>{item?.titulo ?? 'Elemento no encontrado'}</Text>
-      <Text style={styles.text}>{item?.descripcion ?? 'Vuelve al mapa para continuar.'}</Text>
-
-      {lugar && (
-        <Text style={styles.location}>Lugar: {lugar.nombre}</Text>
+      {tipo === 'recuerdo' && (
+        <>
+          <Text style={styles.itemTitle}>{item?.titulo ?? 'Elemento no encontrado'}</Text>
+          <Text style={styles.text}>{item?.descripcion ?? 'Vuelve al mapa para continuar.'}</Text>
+        </>
       )}
 
       <Text style={styles.hint}>Toca la imagen para continuar</Text>
@@ -81,6 +123,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 
+  clueImage: {
+    width: 330,
+    height: 210,
+  },
+
   itemTitle: {
     fontFamily: Fonts.sunshine,
     fontSize: 26,
@@ -93,14 +140,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sunshine,
     fontSize: 20,
     color: 'gray',
-    marginTop: 12,
-    textAlign: 'center',
-  },
-
-  location: {
-    fontFamily: Fonts.sunshine,
-    fontSize: 20,
-    color: '#c084b6',
     marginTop: 12,
     textAlign: 'center',
   },

@@ -1,17 +1,72 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { router } from 'expo-router';
+import { Audio } from 'expo-av';
+import { useFocusEffect } from '@react-navigation/native';
 import { Fonts } from '@/constants/fonts';
 import { cap1Scenes } from '@/data/chapters';
 import { getClueById } from '@/data/clues';
+import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 
 export default function Cap1() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+  const chapterMusic = useRef<Audio.Sound | null>(null);
 
-  const terminarCapitulo = () => {
+  const stopChapterMusic = async () => {
+    try {
+      const sound = chapterMusic.current;
+      chapterMusic.current = null;
+      await sound?.stopAsync();
+      await sound?.unloadAsync();
+    } catch (e) {
+      console.log('error stop cap1 music:', e);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+
+    const startChapterMusic = async () => {
+      try {
+        await (global as any).bgSound?.current?.pauseAsync();
+        await stopChapterMusic();
+
+        const { sound } = await Audio.Sound.createAsync(
+          require('@/assets/sounds/cap1_music.mp3'),
+          {
+            isLooping: true,
+            volume: (global as any).musicVolume ?? 0.5,
+          }
+        );
+
+        if (!active) {
+          await sound.unloadAsync();
+          return;
+        }
+
+        chapterMusic.current = sound;
+        await sound.playAsync();
+      } catch (e) {
+        console.log('error cap1 music:', e);
+      }
+    };
+
+    startChapterMusic();
+
+    return () => {
+      active = false;
+      stopChapterMusic();
+    };
+    }, [])
+  );
+
+  const terminarCapitulo = async () => {
     const pista = getClueById('cap1_pista1');
     if (!pista) return;
+
+    await stopChapterMusic();
 
     router.push({
       pathname: '/recompensa',
@@ -49,11 +104,16 @@ export default function Cap1() {
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <TouchableOpacity style={styles.touchableArea} onPress={manejarToque}>
-        <Image source={cap1Scenes[escena].imagen} style={styles.image} />
+        <Image
+          source={cap1Scenes[escena].imagen}
+          style={styles.image}
+          resizeMode="cover"
+        />
         <View style={styles.dialogo}>
           <Text style={styles.texto}>{cap1Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
+      <ChapterVolumeControl musicRef={chapterMusic} />
     </View>
   );
 }
