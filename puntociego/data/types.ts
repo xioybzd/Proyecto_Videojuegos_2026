@@ -13,6 +13,23 @@ export type GameLocation = {
   };
 };
 
+export type LocationNPC = {
+  id: string;
+  capituloID: string;
+  nombre: string;
+  descripcion: string;
+  radioMetros: number;
+  imagen: ImageSourcePropType;
+  coordenadas_inicio: {
+    latitude: number;
+    longitude: number;
+  };
+  coordenadas_final: {
+    latitude: number;
+    longitude: number;
+  };
+};
+
 export type GameItem = {
   id: string;
   titulo: string;
