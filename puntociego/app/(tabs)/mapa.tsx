@@ -9,6 +9,8 @@ import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
 import { locations } from '@/data/locations';
 import { locations_npc } from '@/data/locations_NPC';
+import {clues} from '@/data/clues';
+import { memories } from "@/data/memories";
 
 type PlayerLocation = {
   latitude: number;
@@ -53,45 +55,70 @@ export default function MapaScreen() {
   const movingToEnd = useRef(true);
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
 
-  const pistaActiva = pistas.find((p) => p.id === 'cap1_pista1');
-  const recuerdoDesbloqueado = recuerdos.some((r) => r.id === 'cap1_recuerdo1');
+  const pistaActiva = pistas[pistas.length - 1];
+
+  const recuerdoActivo = useMemo(() => {
+    if (!pistaActiva) return undefined;
+
+    return memories.find(
+      (memory) => memory.capituloId === pistaActiva.capituloId
+    );
+  }, [pistaActiva]);
+  
+  const recuerdoDesbloqueado =
+    recuerdoActivo &&
+    recuerdos.some((r) => r.id === recuerdoActivo.id);
+
+  const siguientePista = useMemo(() => {
+    if (!pistaActiva) return undefined;
+
+    const numeroCapitulo =
+      Number(pistaActiva.capituloId.replace("cap", ""));
+
+    return clues.find(
+      clue => clue.capituloId === `cap${numeroCapitulo + 1}`
+    );
+  }, [pistaActiva]);
 
   const ubicacionObjetivo = useMemo(
     () => locations.find((location) => location.id === pistaActiva?.lugarId),
     [pistaActiva?.lugarId]
   );
 
-  const ubicacionNPC = useMemo(
-    () => locations_npc.find((location_npc) => location_npc.capituloID === pistaActiva?.capituloId),
-    [pistaActiva?.capituloId]
-  );
+  const ubicacionNPC = useMemo(() => {
+    if (recuerdoDesbloqueado) return undefined;
+
+    return locations_npc.find(
+      (location_npc) => location_npc.capituloID === pistaActiva?.capituloId
+    );
+  }, [pistaActiva?.capituloId, recuerdoDesbloqueado]);
+  
 
   const distanciaObjetivo =
     playerLocation && ubicacionObjetivo?.coordenadas
       ? getDistanceMeters(playerLocation, ubicacionObjetivo.coordenadas)
       : null;
 
-  /*
-      const distanciaNPC =
+  const distanciaNPC =
     playerLocation && npcPosition
       ? getDistanceMeters(playerLocation, npcPosition)
       : null;
-  */
 
   const estaEnObjetivo =
     distanciaObjetivo !== null &&
     ubicacionObjetivo &&
     distanciaObjetivo <= ubicacionObjetivo.radioMetros;
 
-  /*
   const InteractuarNPC =
     distanciaNPC !== null &&
     ubicacionNPC &&
     distanciaNPC <= ubicacionNPC.radioMetros;
-  */
 
   useEffect(() => {
-    if (!ubicacionNPC) return;
+    if (!ubicacionNPC) {
+      setNpcPosition(null);
+      return;
+    }
 
     setNpcPosition(ubicacionNPC.coordenadas_inicio);
   }, [ubicacionNPC]);
@@ -249,7 +276,7 @@ export default function MapaScreen() {
 
   useEffect(() => {
     if (DEMO_SKIP_LOCATION_CHECKS) return;
-    if (!estaEnObjetivo || !pistaActiva || recuerdoDesbloqueado) return;
+    if (!estaEnObjetivo || !pistaActiva || recuerdoDesbloqueado || !recuerdoActivo) return;
 
     const unlock = async () => {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -257,14 +284,40 @@ export default function MapaScreen() {
       router.push({
         pathname: '/recompensa',
         params: {
-          id: 'cap1_recuerdo1',
-          tipo: 'recuerdo',
+          id: recuerdoActivo.id,
+          tipo: "recuerdo",
         },
       });
     };
 
     unlock();
-  }, [estaEnObjetivo, pistaActiva, recuerdoDesbloqueado, router]);
+  }, [estaEnObjetivo, pistaActiva, recuerdoDesbloqueado, recuerdoActivo, router]);
+
+  useEffect(() => {
+    if (DEMO_SKIP_LOCATION_CHECKS) return;
+    if (!InteractuarNPC) return;
+    if (!siguientePista) return;
+
+    const unlock = async () => {
+      await Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Success
+      );
+
+      router.push({
+        pathname: "/recompensa",
+        params: {
+          id: siguientePista.id,
+          tipo: "pista",
+        },
+      });
+    };
+
+    unlock();
+  }, [
+    InteractuarNPC,
+    siguientePista,
+    router,
+  ]);
 
   const handlePlay = async () => {
     await playClick();
