@@ -8,6 +8,9 @@ import { DEMO_SKIP_LOCATION_CHECKS } from '@/config/demo';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
 import { locations } from '@/data/locations';
+import { locations_npc } from '@/data/locations_NPC';
+import {clues} from '@/data/clues';
+import { memories } from "@/data/memories";
 
 type PlayerLocation = {
   latitude: number;
@@ -48,19 +51,57 @@ export default function MapaScreen() {
   const [playerLocation, setPlayerLocation] = useState<PlayerLocation | null>(null);
   const [permissionError, setPermissionError] = useState('');
   const [loadingLocation, setLoadingLocation] = useState(true);
+  const [npcPosition, setNpcPosition] = useState<PlayerLocation | null>(null);
+  const movingToEnd = useRef(true);
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
 
-  const pistaActiva = pistas.find((p) => p.id === 'cap1_pista1');
-  const recuerdoDesbloqueado = recuerdos.some((r) => r.id === 'cap1_recuerdo1');
+  const pistaActiva = pistas[pistas.length - 1];
+
+  const recuerdoActivo = useMemo(() => {
+    if (!pistaActiva) return undefined;
+
+    return memories.find(
+      (memory) => memory.capituloId === pistaActiva.capituloId
+    );
+  }, [pistaActiva]);
+  
+  const recuerdoDesbloqueado =
+    recuerdoActivo &&
+    recuerdos.some((r) => r.id === recuerdoActivo.id);
+
+  const siguientePista = useMemo(() => {
+    if (!pistaActiva) return undefined;
+
+    const numeroCapitulo =
+      Number(pistaActiva.capituloId.replace("cap", ""));
+
+    return clues.find(
+      clue => clue.capituloId === `cap${numeroCapitulo + 1}`
+    );
+  }, [pistaActiva]);
 
   const ubicacionObjetivo = useMemo(
     () => locations.find((location) => location.id === pistaActiva?.lugarId),
     [pistaActiva?.lugarId]
   );
 
+  const ubicacionNPC = useMemo(() => {
+    if (recuerdoDesbloqueado) return undefined;
+
+    return locations_npc.find(
+      (location_npc) => location_npc.capituloID === pistaActiva?.capituloId
+    );
+  }, [pistaActiva?.capituloId, recuerdoDesbloqueado]);
+  
+
   const distanciaObjetivo =
     playerLocation && ubicacionObjetivo?.coordenadas
       ? getDistanceMeters(playerLocation, ubicacionObjetivo.coordenadas)
+      : null;
+
+  const distanciaNPC =
+    playerLocation && npcPosition
+      ? getDistanceMeters(playerLocation, npcPosition)
       : null;
 
   const estaEnObjetivo =
@@ -68,6 +109,71 @@ export default function MapaScreen() {
     ubicacionObjetivo &&
     distanciaObjetivo <= ubicacionObjetivo.radioMetros;
 
+  const InteractuarNPC =
+    distanciaNPC !== null &&
+    ubicacionNPC &&
+    distanciaNPC <= ubicacionNPC.radioMetros;
+
+  useEffect(() => {
+    if (!ubicacionNPC) {
+      setNpcPosition(null);
+      return;
+    }
+
+    setNpcPosition(ubicacionNPC.coordenadas_inicio);
+  }, [ubicacionNPC]);
+
+  const moveTowards = (
+    current: PlayerLocation,
+    target: PlayerLocation,
+    step: number
+  ): PlayerLocation => {
+
+    const dx = target.latitude - current.latitude;
+    const dy = target.longitude - current.longitude;
+
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    if (length === 0) return target;
+
+    return {
+      latitude: current.latitude + (dx / length) * step,
+      longitude: current.longitude + (dy / length) * step,
+    };
+  };
+  
+
+  useEffect(() => {
+    if (!ubicacionNPC) return;
+
+    const interval = setInterval(() => {
+      setNpcPosition((current) => {
+        if (!current) return current;
+
+        const target = movingToEnd.current
+          ? ubicacionNPC.coordenadas_final
+          : ubicacionNPC.coordenadas_inicio;
+
+        const next = moveTowards(
+            current,
+            target,
+            0.0000005
+        );
+
+        const distance = getDistanceMeters(next, target);
+
+        if (distance < 2) {
+            movingToEnd.current = !movingToEnd.current;
+            return target;
+        }
+
+        return next;
+      });
+    }, 30);
+
+    return () => clearInterval(interval);
+
+  }, [ubicacionNPC]);
   const playClick = async () => {
     try {
       const sound = (global as any).clickSound?.current;
@@ -170,7 +276,7 @@ export default function MapaScreen() {
 
   useEffect(() => {
     if (DEMO_SKIP_LOCATION_CHECKS) return;
-    if (!estaEnObjetivo || !pistaActiva || recuerdoDesbloqueado) return;
+    if (!estaEnObjetivo || !pistaActiva || recuerdoDesbloqueado || !recuerdoActivo) return;
 
     const unlock = async () => {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -178,14 +284,40 @@ export default function MapaScreen() {
       router.push({
         pathname: '/recompensa',
         params: {
-          id: 'cap1_recuerdo1',
-          tipo: 'recuerdo',
+          id: recuerdoActivo.id,
+          tipo: "recuerdo",
         },
       });
     };
 
     unlock();
-  }, [estaEnObjetivo, pistaActiva, recuerdoDesbloqueado, router]);
+  }, [estaEnObjetivo, pistaActiva, recuerdoDesbloqueado, recuerdoActivo, router]);
+
+  useEffect(() => {
+    if (DEMO_SKIP_LOCATION_CHECKS) return;
+    if (!InteractuarNPC) return;
+    if (!siguientePista) return;
+
+    const unlock = async () => {
+      await Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Success
+      );
+
+      router.push({
+        pathname: "/recompensa",
+        params: {
+          id: siguientePista.id,
+          tipo: "pista",
+        },
+      });
+    };
+
+    unlock();
+  }, [
+    InteractuarNPC,
+    siguientePista,
+    router,
+  ]);
 
   const handlePlay = async () => {
     await playClick();
@@ -221,6 +353,27 @@ export default function MapaScreen() {
             />
           </>
         )}
+
+        {npcPosition && ubicacionNPC && (
+            <>
+              <Marker coordinate={npcPosition} anchor={{ x: 0.5, y: 0.5 }}>
+                  <Image
+                    source={ubicacionNPC.imagen}
+                    style={{
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+              </Marker>
+
+              <Circle
+                center={npcPosition}
+                radius={ubicacionNPC.radioMetros}
+                strokeColor="rgba(192,132,182,0.9)"
+                fillColor="rgba(192,132,182,0.22)"
+              />
+            </>
+          )}
       </MapView>
 
       {(DEMO_SKIP_LOCATION_CHECKS || loadingLocation || permissionError || ubicacionObjetivo) && (
