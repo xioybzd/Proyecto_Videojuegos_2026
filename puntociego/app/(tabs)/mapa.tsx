@@ -7,10 +7,10 @@ import MapView, { Circle, Marker, PROVIDER_GOOGLE, Region } from 'react-native-m
 import { DEMO_SKIP_LOCATION_CHECKS } from '@/config/demo';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
-import { locations } from '@/data/locations';
+import { locationUnlocks, locations } from '@/data/locations';
 import { locations_npc } from '@/data/locations_NPC';
-import {clues} from '@/data/clues';
-import { memories } from "@/data/memories";
+import { getMemoryById } from '@/data/memories';
+import { PhoneButton } from '@/components/PhoneButton';
 
 type PlayerLocation = {
   latitude: number;
@@ -47,7 +47,14 @@ const getDistanceMeters = (
 
 export default function MapaScreen() {
   const router = useRouter();
-  const { pistas, recuerdos } = useContext(GameContext);
+  const {
+    pistas,
+    recuerdos,
+    lugaresVisitados,
+    capitulosCompletados,
+    celularDesbloqueado,
+    marcarLugarVisitado,
+  } = useContext(GameContext);
   const [playerLocation, setPlayerLocation] = useState<PlayerLocation | null>(null);
   const [permissionError, setPermissionError] = useState('');
   const [loadingLocation, setLoadingLocation] = useState(true);
@@ -55,44 +62,50 @@ export default function MapaScreen() {
   const movingToEnd = useRef(true);
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
 
-  const pistaActiva = pistas[pistas.length - 1];
+  const desbloqueoActivo = useMemo(
+    () =>
+      locationUnlocks.find(
+        (unlock) =>
+          (!unlock.clueId || pistas.some((pista) => pista.id === unlock.clueId)) &&
+          (!unlock.prerequisiteRecuerdoId ||
+            recuerdos.some((recuerdo) => recuerdo.id === unlock.prerequisiteRecuerdoId)) &&
+          (!unlock.prerequisiteChapterId ||
+            capitulosCompletados.includes(unlock.prerequisiteChapterId)) &&
+          (!('recuerdoId' in unlock) ||
+            !recuerdos.some((recuerdo) => recuerdo.id === unlock.recuerdoId)) &&
+          (!('lugarId' in unlock) || !lugaresVisitados.includes(unlock.lugarId))
+      ),
+    [pistas, recuerdos, lugaresVisitados, capitulosCompletados]
+  );
 
-  const recuerdoActivo = useMemo(() => {
-    if (!pistaActiva) return undefined;
-
-    return memories.find(
-      (memory) => memory.capituloId === pistaActiva.capituloId
-    );
-  }, [pistaActiva]);
-  
-  const recuerdoDesbloqueado =
-    recuerdoActivo &&
-    recuerdos.some((r) => r.id === recuerdoActivo.id);
-
-  const siguientePista = useMemo(() => {
-    if (!pistaActiva) return undefined;
-
-    const numeroCapitulo =
-      Number(pistaActiva.capituloId.replace("cap", ""));
-
-    return clues.find(
-      clue => clue.capituloId === `cap${numeroCapitulo + 1}`
-    );
-  }, [pistaActiva]);
+  const recuerdoObjetivo =
+    desbloqueoActivo && 'recuerdoId' in desbloqueoActivo
+      ? getMemoryById(desbloqueoActivo.recuerdoId)
+      : undefined;
+  const lugarObjetivoId =
+    recuerdoObjetivo?.lugarId ??
+    (desbloqueoActivo && 'lugarId' in desbloqueoActivo
+      ? desbloqueoActivo.lugarId
+      : undefined);
+  const objetivoDesbloqueado = desbloqueoActivo
+    ? ('recuerdoId' in desbloqueoActivo &&
+        recuerdos.some((r) => r.id === desbloqueoActivo.recuerdoId)) ||
+      ('lugarId' in desbloqueoActivo &&
+        lugaresVisitados.includes(desbloqueoActivo.lugarId))
+    : false;
 
   const ubicacionObjetivo = useMemo(
-    () => locations.find((location) => location.id === pistaActiva?.lugarId),
-    [pistaActiva?.lugarId]
+    () => locations.find((location) => location.id === lugarObjetivoId),
+    [lugarObjetivoId]
   );
 
   const ubicacionNPC = useMemo(() => {
-    if (recuerdoDesbloqueado) return undefined;
+    const cap4Completado = capitulosCompletados.includes('cap4');
+    const recuerdoNPCDesbloqueado = recuerdos.some((r) => r.id === 'cap4_recuerdo1');
 
-    return locations_npc.find(
-      (location_npc) => location_npc.capituloID === pistaActiva?.capituloId
-    );
-  }, [pistaActiva?.capituloId, recuerdoDesbloqueado]);
-  
+    if (!cap4Completado || recuerdoNPCDesbloqueado) return undefined;
+    return locations_npc.find((locationNpc) => locationNpc.capituloID === 'cap4');
+  }, [capitulosCompletados, recuerdos]);
 
   const distanciaObjetivo =
     playerLocation && ubicacionObjetivo?.coordenadas
@@ -109,7 +122,7 @@ export default function MapaScreen() {
     ubicacionObjetivo &&
     distanciaObjetivo <= ubicacionObjetivo.radioMetros;
 
-  const InteractuarNPC =
+  const interactuarNPC =
     distanciaNPC !== null &&
     ubicacionNPC &&
     distanciaNPC <= ubicacionNPC.radioMetros;
@@ -128,10 +141,8 @@ export default function MapaScreen() {
     target: PlayerLocation,
     step: number
   ): PlayerLocation => {
-
     const dx = target.latitude - current.latitude;
     const dy = target.longitude - current.longitude;
-
     const length = Math.sqrt(dx * dx + dy * dy);
 
     if (length === 0) return target;
@@ -141,7 +152,6 @@ export default function MapaScreen() {
       longitude: current.longitude + (dy / length) * step,
     };
   };
-  
 
   useEffect(() => {
     if (!ubicacionNPC) return;
@@ -154,17 +164,12 @@ export default function MapaScreen() {
           ? ubicacionNPC.coordenadas_final
           : ubicacionNPC.coordenadas_inicio;
 
-        const next = moveTowards(
-            current,
-            target,
-            0.0000005
-        );
-
+        const next = moveTowards(current, target, 0.0000005);
         const distance = getDistanceMeters(next, target);
 
         if (distance < 2) {
-            movingToEnd.current = !movingToEnd.current;
-            return target;
+          movingToEnd.current = !movingToEnd.current;
+          return target;
         }
 
         return next;
@@ -172,8 +177,8 @@ export default function MapaScreen() {
     }, 30);
 
     return () => clearInterval(interval);
-
   }, [ubicacionNPC]);
+
   const playClick = async () => {
     try {
       const sound = (global as any).clickSound?.current;
@@ -276,7 +281,32 @@ export default function MapaScreen() {
 
   useEffect(() => {
     if (DEMO_SKIP_LOCATION_CHECKS) return;
-    if (!estaEnObjetivo || !pistaActiva || recuerdoDesbloqueado || !recuerdoActivo) return;
+    if (!estaEnObjetivo || !desbloqueoActivo || objetivoDesbloqueado) return;
+
+    const unlock = async () => {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+      if ('lugarId' in desbloqueoActivo) {
+        marcarLugarVisitado(desbloqueoActivo.lugarId);
+        router.replace('/capitulo');
+        return;
+      }
+
+      router.push({
+        pathname: '/recompensa',
+        params: {
+          id: desbloqueoActivo.recuerdoId,
+          tipo: 'recuerdo',
+        },
+      });
+    };
+
+    unlock();
+  }, [estaEnObjetivo, desbloqueoActivo, objetivoDesbloqueado, marcarLugarVisitado, router]);
+
+  useEffect(() => {
+    if (DEMO_SKIP_LOCATION_CHECKS) return;
+    if (!interactuarNPC) return;
 
     const unlock = async () => {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -284,40 +314,14 @@ export default function MapaScreen() {
       router.push({
         pathname: '/recompensa',
         params: {
-          id: recuerdoActivo.id,
-          tipo: "recuerdo",
+          id: 'cap4_recuerdo1',
+          tipo: 'recuerdo',
         },
       });
     };
 
     unlock();
-  }, [estaEnObjetivo, pistaActiva, recuerdoDesbloqueado, recuerdoActivo, router]);
-
-  useEffect(() => {
-    if (DEMO_SKIP_LOCATION_CHECKS) return;
-    if (!InteractuarNPC) return;
-    if (!siguientePista) return;
-
-    const unlock = async () => {
-      await Haptics.notificationAsync(
-        Haptics.NotificationFeedbackType.Success
-      );
-
-      router.push({
-        pathname: "/recompensa",
-        params: {
-          id: siguientePista.id,
-          tipo: "pista",
-        },
-      });
-    };
-
-    unlock();
-  }, [
-    InteractuarNPC,
-    siguientePista,
-    router,
-  ]);
+  }, [interactuarNPC, router]);
 
   const handlePlay = async () => {
     await playClick();
@@ -336,7 +340,7 @@ export default function MapaScreen() {
         showsUserLocation
         showsMyLocationButton
       >
-        {ubicacionObjetivo?.coordenadas && !recuerdoDesbloqueado && (
+        {ubicacionObjetivo?.coordenadas && !objetivoDesbloqueado && (
           <>
             <Marker
               coordinate={ubicacionObjetivo.coordenadas}
@@ -355,59 +359,56 @@ export default function MapaScreen() {
         )}
 
         {npcPosition && ubicacionNPC && (
-            <>
-              <Marker coordinate={npcPosition} anchor={{ x: 0.5, y: 0.5 }}>
-                  <Image
-                    source={ubicacionNPC.imagen}
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  />
-              </Marker>
-
-              <Circle
-                center={npcPosition}
-                radius={ubicacionNPC.radioMetros}
-                strokeColor="rgba(192,132,182,0.9)"
-                fillColor="rgba(192,132,182,0.22)"
+          <>
+            <Marker coordinate={npcPosition} anchor={{ x: 0.5, y: 0.5 }}>
+              <Image
+                source={ubicacionNPC.imagen}
+                style={styles.npcMarker}
               />
-            </>
-          )}
+            </Marker>
+
+            <Circle
+              center={npcPosition}
+              radius={ubicacionNPC.radioMetros}
+              strokeColor="rgba(192,132,182,0.9)"
+              fillColor="rgba(192,132,182,0.22)"
+            />
+          </>
+        )}
       </MapView>
 
       {(DEMO_SKIP_LOCATION_CHECKS || loadingLocation || permissionError || ubicacionObjetivo) && (
         <View style={styles.statusPanel}>
           {DEMO_SKIP_LOCATION_CHECKS ? (
-          <>
-            <Text style={styles.statusText}>Modo expo activo</Text>
-            <Text style={styles.detailText}>
-              Las ubicaciones no bloquean la historia durante la presentacion.
-            </Text>
-          </>
-        ) : loadingLocation ? (
-          <View style={styles.loadingRow}>
-            <ActivityIndicator color="white" />
-            <Text style={styles.statusText}>Buscando tu ubicacion...</Text>
-          </View>
-        ) : permissionError ? (
-          <>
-            <Text style={styles.statusText}>{permissionError}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={startLocation}>
-              <Text style={styles.retryText}>Reintentar GPS</Text>
-            </TouchableOpacity>
-          </>
-        ) : ubicacionObjetivo ? (
-          <>
-            <Text style={styles.statusText}>Punto de investigacion activo</Text>
-            <Text style={styles.detailText}>
-              {distanciaObjetivo === null
-                ? 'Usa la pista y acercate al punto marcado para desbloquear el recuerdo.'
-                : estaEnObjetivo
-                  ? 'Recuerdo desbloqueado'
-                  : `Estas a ${Math.round(distanciaObjetivo)} m de una memoria escondida.`}
-            </Text>
-          </>
+            <>
+              <Text style={styles.statusText}>Modo expo activo</Text>
+              <Text style={styles.detailText}>
+                Las ubicaciones no bloquean la historia durante la presentacion.
+              </Text>
+            </>
+          ) : loadingLocation ? (
+            <View style={styles.loadingRow}>
+              <ActivityIndicator color="white" />
+              <Text style={styles.statusText}>Buscando tu ubicacion...</Text>
+            </View>
+          ) : permissionError ? (
+            <>
+              <Text style={styles.statusText}>{permissionError}</Text>
+              <TouchableOpacity style={styles.retryButton} onPress={startLocation}>
+                <Text style={styles.retryText}>Reintentar GPS</Text>
+              </TouchableOpacity>
+            </>
+          ) : ubicacionObjetivo ? (
+            <>
+              <Text style={styles.statusText}>Punto de investigacion activo</Text>
+              <Text style={styles.detailText}>
+                {distanciaObjetivo === null
+                  ? 'Acercate al punto marcado para desbloquear el siguiente fragmento.'
+                  : estaEnObjetivo
+                    ? 'Fragmento desbloqueado'
+                    : `Estas a ${Math.round(distanciaObjetivo)} m de una memoria escondida.`}
+              </Text>
+            </>
           ) : null}
         </View>
       )}
@@ -422,6 +423,11 @@ export default function MapaScreen() {
           style={styles.playImage}
         />
       </TouchableOpacity>
+
+      <PhoneButton
+        visible={celularDesbloqueado}
+        onPress={() => router.push('/celular')}
+      />
     </View>
   );
 }
@@ -504,5 +510,10 @@ const styles = StyleSheet.create({
   playImage: {
     width: '100%',
     height: '100%',
+  },
+
+  npcMarker: {
+    width: 30,
+    height: 30,
   },
 });

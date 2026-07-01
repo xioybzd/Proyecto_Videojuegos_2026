@@ -16,7 +16,7 @@ export const chapters: Chapter[] = [
     imagen: require('@/assets/images/capituloimgs/capitulo2/cap2_01.jpg'),
     ruta: '/capitulo/cap2',
     memoria: 20,
-    requeridoRecuerdoId: 'cap1_recuerdo1',
+    requeridoPistaId: 'cap1_pista1',
   },
   {
     id: 'cap3',
@@ -29,19 +29,36 @@ export const chapters: Chapter[] = [
   },
   {
     id: 'cap4',
-    titulo: 'Capitulo 4',
-    descripcion: 'Bloqueado',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    titulo: 'Capitulo 4 - Hora punta',
+    descripcion: 'En el comedor, todos hacen cola y nadie mira.',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_02.jpg'),
+    ruta: '/capitulo/cap4',
     memoria: 60,
-    requeridoRecuerdoId: 'cap3_recuerdo1',
+    requeridoLugarId: 'comedor-sanmarquino',
   },
   {
     id: 'cap5',
     titulo: 'Capitulo 5',
-    descripcion: 'Bloqueado',
+    descripcion: 'Proximamente',
     imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
     memoria: 80,
-    requeridoRecuerdoId: 'cap4_recuerdo1',
+    requeridoLugarId: 'fcm',
+  },
+  {
+    id: 'cap6',
+    titulo: 'Capitulo 6',
+    descripcion: 'Proximamente',
+    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    memoria: 90,
+    requeridoRecuerdoId: 'cap5_recuerdo1',
+  },
+  {
+    id: 'cap7',
+    titulo: 'Capitulo 7 - Final',
+    descripcion: 'Proximamente',
+    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    memoria: 100,
+    requeridoRecuerdoId: 'cap6_recuerdo1',
   },
 ];
 
@@ -241,5 +258,78 @@ export const cap3Scenes: ChapterScene[] = [
     id: 'cap3_escena19',
     imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_19.jpg'),
     texto: 'Janna investigaba algo.\n\nY Ben estaba alli.',
+  },
+];
+
+export const cap4Scenes: ChapterScene[] = [
+  {
+    id: 'cap4_escena1',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_02.jpg'),
+    texto: 'Donde todos hacen cola, nadie mira.\n\nLa pista me llevo al comedor.',
+  },
+  {
+    id: 'cap4_escena2',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_03.jpg'),
+    texto: 'Era hora punta.\n\nDemasiada gente. Demasiado ruido.',
+  },
+  {
+    id: 'cap4_escena3',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_04.jpg'),
+    texto: 'Si Janna escondio algo aqui...\n\ntenia que estar entre todos.',
+  },
+  {
+    id: 'cap4_escena4',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_05.jpg'),
+    texto: 'Estudiante 1\nTengo un bajon horrible.\n\nEstudiante 2\nEse brownie me dejo con hambre de alma.',
+  },
+  {
+    id: 'cap4_escena5',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_06.jpg'),
+    texto: 'Estudiante 3\nOe, esas papas eran mias.\n\nEstudiante 1\nEran. Pasado.',
+  },
+  {
+    id: 'cap4_escena6',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_07.jpg'),
+    texto: 'Azula\nDisculpen...\n\nEstudiante\nTienes mas brownies?',
+  },
+  {
+    id: 'cap4_escena7',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_08.jpg'),
+    texto: 'Azula\nConocen a Ben?\n\nEstudiante\nBen?\n\nOtro estudiante\nBen estaba con ellos.',
+  },
+  {
+    id: 'cap4_escena8',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_09.jpg'),
+    texto: 'Ben...\n\nOtra vez Ben.',
+  },
+  {
+    id: 'cap4_escena9',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_10.jpg'),
+    texto: 'Azula\nY Janna?\n\nChica\nElla preguntaba mucho.',
+  },
+  {
+    id: 'cap4_escena10',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_11.jpg'),
+    texto: 'Estudiante\nDemasiado.\n\nOtro\nPor eso la miraban feo.',
+  },
+  {
+    id: 'cap4_escena11',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_12.jpg'),
+    texto: 'Chica\nNo deberias preguntar tanto.\n\nEstudiante\nLuego tambien te van a mirar a ti.',
+  },
+  {
+    id: 'cap4_escena12',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_13.jpg'),
+    texto: 'Chica\nToma.\n\nAzula\nEsto era de Janna?\n\nChica\nNo se... quiza.',
+  },
+  {
+    id: 'cap4_escena13',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_14.jpg'),
+    texto: 'Quimica no es el inicio.\nSolo la fachada.\n\nEl mismo simbolo.',
+  },
+  {
+    id: 'cap4_escena14',
+    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_15.jpg'),
+    texto: 'Quimica no es el inicio...\n\nSolo la fachada...\n\nQue se supone que significa eso?',
   },
 ];
