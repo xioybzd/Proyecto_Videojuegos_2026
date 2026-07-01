@@ -5,26 +5,36 @@ type GameContextType = {
   pistas: GameItem[];
   recuerdos: GameItem[];
   lugaresVisitados: string[];
+  capitulosCompletados: string[];
+  celularDesbloqueado: boolean;
   memoriaRecuperada: number;
   agregarPista: (p: GameItem) => void;
   agregarRecuerdo: (r: GameItem) => void;
   marcarLugarVisitado: (lugarId: string) => void;
+  marcarCapituloCompletado: (capituloId: string) => void;
+  desbloquearCelular: () => void;
 };
 
 export const GameContext = createContext<GameContextType>({
   pistas: [],
   recuerdos: [],
   lugaresVisitados: [],
+  capitulosCompletados: [],
+  celularDesbloqueado: false,
   memoriaRecuperada: 0,
   agregarPista: () => {},
   agregarRecuerdo: () => {},
   marcarLugarVisitado: () => {},
+  marcarCapituloCompletado: () => {},
+  desbloquearCelular: () => {},
 });
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [pistas, setPistas] = useState<GameItem[]>([]);
   const [recuerdos, setRecuerdos] = useState<GameItem[]>([]);
   const [lugaresVisitados, setLugaresVisitados] = useState<string[]>([]);
+  const [capitulosCompletados, setCapitulosCompletados] = useState<string[]>([]);
+  const [celularDesbloqueado, setCelularDesbloqueado] = useState(false);
 
   const memoriaRecuperada = recuerdos.length * 20;
 
@@ -51,16 +61,31 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const marcarCapituloCompletado = (capituloId: string) => {
+    setCapitulosCompletados((prev) => {
+      if (prev.includes(capituloId)) return prev;
+      return [...prev, capituloId];
+    });
+  };
+
+  const desbloquearCelular = () => {
+    setCelularDesbloqueado(true);
+  };
+
   return (
     <GameContext.Provider
       value={{
         pistas,
         recuerdos,
         lugaresVisitados,
+        capitulosCompletados,
+        celularDesbloqueado,
         memoriaRecuperada,
         agregarPista,
         agregarRecuerdo,
         marcarLugarVisitado,
+        marcarCapituloCompletado,
+        desbloquearCelular,
       }}
     >
       {children}

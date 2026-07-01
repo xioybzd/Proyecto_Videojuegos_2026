@@ -16,6 +16,10 @@ export default function Recompensa() {
   const tipo = params.tipo as RewardType;
   const id = params.id as string;
   const item = tipo === 'recuerdo' ? getMemoryById(id) : getClueById(id);
+  const rewardTitle =
+    tipo === 'recuerdo'
+      ? 'Recuerdo desbloqueado'
+      : 'Nueva pista encontrada';
 
   useEffect(() => {
     let tingSound: Audio.Sound | null = null;
@@ -78,7 +82,7 @@ export default function Recompensa() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {tipo === 'recuerdo' ? 'Recuerdo desbloqueado' : 'Nueva pista encontrada'}
+        {rewardTitle}
       </Text>
 
       <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>

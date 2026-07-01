@@ -30,6 +30,8 @@ export type Chapter = {
   ruta?: string;
   memoria: number;
   requeridoRecuerdoId?: string;
+  requeridoPistaId?: string;
+  requeridoLugarId?: string;
 };
 
 export type ChapterScene = {

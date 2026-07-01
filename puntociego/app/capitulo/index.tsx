@@ -10,7 +10,7 @@ const { width } = Dimensions.get('window');
 
 export default function Capitulos() {
   const router = useRouter();
-  const { recuerdos } = useContext(GameContext);
+  const { pistas, recuerdos, lugaresVisitados } = useContext(GameContext);
 
   useEffect(() => {
     const pauseMainMusic = async () => {
@@ -25,13 +25,23 @@ export default function Capitulos() {
   }, []);
 
   const estaDesbloqueado = (capitulo: Chapter) => {
-    if (!capitulo.requeridoRecuerdoId) return true;
-    return recuerdos.some((r) => r.id === capitulo.requeridoRecuerdoId);
+    const tienePista =
+      !capitulo.requeridoPistaId ||
+      pistas.some((p) => p.id === capitulo.requeridoPistaId);
+    const tieneRecuerdo =
+      !capitulo.requeridoRecuerdoId ||
+      recuerdos.some((r) => r.id === capitulo.requeridoRecuerdoId);
+    const visitoLugar =
+      !capitulo.requeridoLugarId ||
+      lugaresVisitados.includes(capitulo.requeridoLugarId);
+
+    return tienePista && tieneRecuerdo && visitoLugar;
   };
 
   const renderItem = ({ item }: { item: Chapter }) => {
     const desbloqueado = estaDesbloqueado(item);
     const puedeJugar = desbloqueado && item.ruta;
+    const estaPendiente = desbloqueado && !item.ruta;
 
     return (
       <View style={styles.card}>
@@ -54,7 +64,7 @@ export default function Capitulos() {
           }}
         >
           <Text style={styles.buttonText}>
-            {puedeJugar ? 'Jugar' : 'Bloqueado'}
+            {puedeJugar ? 'Jugar' : estaPendiente ? 'Pronto' : 'Bloqueado'}
           </Text>
         </TouchableOpacity>
       </View>
