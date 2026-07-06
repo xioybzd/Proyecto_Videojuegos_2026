@@ -7,12 +7,14 @@ type GameContextType = {
   lugaresVisitados: string[];
   capitulosCompletados: string[];
   celularDesbloqueado: boolean;
+  glitchAparecio: boolean;
   memoriaRecuperada: number;
   agregarPista: (p: GameItem) => void;
   agregarRecuerdo: (r: GameItem) => void;
   marcarLugarVisitado: (lugarId: string) => void;
   marcarCapituloCompletado: (capituloId: string) => void;
   desbloquearCelular: () => void;
+  aparicionGlitch: () => void;
 };
 
 export const GameContext = createContext<GameContextType>({
@@ -21,12 +23,14 @@ export const GameContext = createContext<GameContextType>({
   lugaresVisitados: [],
   capitulosCompletados: [],
   celularDesbloqueado: false,
+  glitchAparecio: false,
   memoriaRecuperada: 0,
   agregarPista: () => {},
   agregarRecuerdo: () => {},
   marcarLugarVisitado: () => {},
   marcarCapituloCompletado: () => {},
   desbloquearCelular: () => {},
+  aparicionGlitch: () => {},
 });
 
 export function GameProvider({ children }: { children: ReactNode }) {
@@ -35,6 +39,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [lugaresVisitados, setLugaresVisitados] = useState<string[]>([]);
   const [capitulosCompletados, setCapitulosCompletados] = useState<string[]>([]);
   const [celularDesbloqueado, setCelularDesbloqueado] = useState(false);
+  const [glitchAparecio, setAparicionGlitch] = useState(false);
 
   const memoriaRecuperada = recuerdos.length * 20;
 
@@ -72,6 +77,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setCelularDesbloqueado(true);
   };
 
+  const aparicionGlitch = () => {
+    setAparicionGlitch(true);
+  }
+
   return (
     <GameContext.Provider
       value={{
@@ -80,12 +89,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
         lugaresVisitados,
         capitulosCompletados,
         celularDesbloqueado,
+        glitchAparecio,
         memoriaRecuperada,
         agregarPista,
         agregarRecuerdo,
         marcarLugarVisitado,
         marcarCapituloCompletado,
         desbloquearCelular,
+        aparicionGlitch,
       }}
     >
       {children}
