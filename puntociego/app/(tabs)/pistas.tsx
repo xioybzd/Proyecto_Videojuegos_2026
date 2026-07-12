@@ -13,7 +13,7 @@ import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
 
 export default function PistasScreen() {
-  const { pistas } = useContext(GameContext);
+  const { pistas, glitchAparecio } = useContext(GameContext);
   const insets = useSafeAreaInsets();
 
   const TAB_BAR_HEIGHT = 70;
@@ -32,7 +32,10 @@ export default function PistasScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[
+      styles.container,
+      glitchAparecio && { backgroundColor: '#110118' }
+    ]}>
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
         <Text style={styles.title}>Pistas ({pistas.length})</Text>
       </View>
@@ -57,7 +60,7 @@ export default function PistasScreen() {
           ))
         )}
 
-        <TouchableOpacity style={styles.button} onPress={playClick}>
+        <TouchableOpacity style={[styles.button, glitchAparecio && { backgroundColor: '#270101' }]} onPress={playClick}>
           <Text style={styles.buttonText}>Explorar pistas</Text>
         </TouchableOpacity>
       </ScrollView>

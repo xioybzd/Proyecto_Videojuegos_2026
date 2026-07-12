@@ -11,45 +11,56 @@ import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
 
 export default function PerfilScreen() {
-  const { pistas, recuerdos, lugaresVisitados, memoriaRecuperada } = useContext(GameContext);
+  const { pistas, recuerdos, lugaresVisitados, memoriaRecuperada, glitchAparecio } = useContext(GameContext);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[
+      styles.container,
+      glitchAparecio && { backgroundColor: '#110118' }
+    ]}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>Perfil</Text>
 
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
             <Image
-              source={require('@/assets/images/fotoperfilAzulaNueva.png')}
+              source={
+                glitchAparecio
+                  ? require('@/assets/images/glitched/fotoperfilAzulaNueva_glitched.png')
+                  : require('@/assets/images/fotoperfilAzulaNueva.png')
+              }
               style={styles.avatarImage}
             />
           </View>
 
-          <Text style={styles.name}>Azula</Text>
-          <Text style={styles.contentText}>Estudiante universitaria</Text>
-          <Text style={styles.mysteryText}>En busca de la verdad</Text>
+          <Text style={[styles.name, glitchAparecio && { color: '#194049' }]}>Azula</Text>
+          <Text style={[styles.contentText, glitchAparecio && { color: '#194049' }]}>Estudiante universitaria</Text>
+          <Text style={[styles.mysteryText, glitchAparecio && { color: '#6e1533' }]}>En busca de la verdad</Text>
         </View>
 
         <View style={styles.progressBox}>
           <Text style={styles.progressLabel}>Memoria recuperada</Text>
           <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${Math.min(memoriaRecuperada, 100)}%` }]} />
+            <View style={[
+              styles.progressFill, 
+              { width: `${Math.min(memoriaRecuperada, 100)}%` },
+              glitchAparecio && { backgroundColor: '#350072' }
+            ]} />
           </View>
           <Text style={styles.progressText}>{Math.min(memoriaRecuperada, 100)}%</Text>
         </View>
 
         <View style={styles.stats}>
           <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{pistas.length}</Text>
+            <Text style={[styles.statNumber, glitchAparecio && { color: '#6e1533' }]}>{pistas.length}</Text>
             <Text style={styles.stat}>Pistas</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{recuerdos.length}</Text>
+            <Text style={[styles.statNumber, glitchAparecio && { color: '#6e1533' }]}>{recuerdos.length}</Text>
             <Text style={styles.stat}>Recuerdos</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{lugaresVisitados.length}</Text>
+            <Text style={[styles.statNumber, glitchAparecio && { color: '#6e1533' }]}>{lugaresVisitados.length}</Text>
             <Text style={styles.stat}>Lugares</Text>
           </View>
         </View>
