@@ -5,9 +5,9 @@ export const locations_npc: LocationNPC[] = [
     id: 'NPC_comedor',
     capituloID: 'cap4',
     nombre: 'NPC Comedor',
-    descripcion: 'NPC que aparece en el cap5 para desbloquear cap5',
-    radioMetros: 25,
-    imagen: require('@/assets/images/botonplay.png'),
+    descripcion: 'NPC que aparece en el cap4 para desbloquear cap5',
+    radioMetros: 7,
+    imagen: require('@/assets/images/npcs/NPC.png'),
     coordenadas_inicio: {
       latitude: -12.059390,
       longitude: -77.082853,

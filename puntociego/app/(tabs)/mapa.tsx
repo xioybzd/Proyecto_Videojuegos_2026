@@ -373,10 +373,12 @@ export default function MapaScreen() {
         {npcPosition && ubicacionNPC && (
           <>
             <Marker coordinate={npcPosition} anchor={{ x: 0.5, y: 0.5 }}>
-              <Image
-                source={ubicacionNPC.imagen}
-                style={styles.npcMarker}
-              />
+              <View style={styles.markerContainer}>
+                <Image
+                  source={ubicacionNPC.imagen}
+                  style={styles.npcMarker}
+                />
+              </View>
             </Marker>
 
             <Circle
@@ -602,8 +604,16 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  npcMarker: {
+  markerContainer: {
     width: 30,
     height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  npcMarker: {
+      width: 30,
+      height: 30,
+      transform: [{ scale: 1.4 }],
   },
 });
