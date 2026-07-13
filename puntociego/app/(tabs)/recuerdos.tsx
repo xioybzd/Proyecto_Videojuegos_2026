@@ -14,7 +14,7 @@ import { Fonts } from '@/constants/fonts';
 import { getLocationById } from '@/data/locations';
 
 export default function RecuerdosScreen() {
-  const { recuerdos } = useContext(GameContext);
+  const { recuerdos, glitchAparecio } = useContext(GameContext);
   const insets = useSafeAreaInsets();
 
   const TAB_BAR_HEIGHT = 70;
@@ -33,7 +33,10 @@ export default function RecuerdosScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[
+      styles.container,
+      glitchAparecio && { backgroundColor: '#110118' }
+    ]}>
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
         <Text style={styles.title}>Recuerdos ({recuerdos.length})</Text>
       </View>
@@ -73,7 +76,7 @@ export default function RecuerdosScreen() {
           })
         )}
 
-        <TouchableOpacity style={styles.button} onPress={playClick}>
+        <TouchableOpacity style={[styles.button, glitchAparecio && { backgroundColor: '#270101' }]} onPress={playClick}>
           <Text style={styles.buttonText}>Explorar recuerdos</Text>
         </TouchableOpacity>
       </ScrollView>

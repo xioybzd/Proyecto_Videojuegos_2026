@@ -8,11 +8,13 @@ import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 
 export default function Cap3() {
   const { desbloquearCelular } = useContext(GameContext);
+  const { aparicionGlitch } = useContext(GameContext);
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
 
   const terminarCapitulo = () => {
     desbloquearCelular();
+    aparicionGlitch();
     router.replace('/(tabs)/mapa');
   };
 

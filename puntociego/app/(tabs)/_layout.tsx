@@ -42,7 +42,7 @@ export default function TabLayout() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const { pistas } = useContext(GameContext);
+  const { pistas, glitchAparecio } = useContext(GameContext);
   const [showHelp, setShowHelp] = useState(false);
   const [helpIndex, setHelpIndex] = useState(0);
   const [clueHelpStep, setClueHelpStep] = useState(0);
@@ -133,7 +133,11 @@ export default function TabLayout() {
       {/* BARRA SUPERIOR */}
       <View pointerEvents="box-none" style={[styles.topBar, { paddingTop: insets.top }]}>
         <Image
-          source={require('@/assets/images/barrasup.png')}
+          source={
+            glitchAparecio
+              ? require('@/assets/images/glitched/barrasup_glitched.png')
+              : require('@/assets/images/barrasup.png')
+          }
           style={styles.topBarImage}
           resizeMode="stretch"
         />
@@ -161,7 +165,11 @@ export default function TabLayout() {
               activeOpacity={0.85}
             >
               <Image
-                source={require('@/assets/images/ayuda/botonayuda.png')}
+                source={
+                  glitchAparecio
+                    ? require('@/assets/images/glitched/botonayuda_glitched.png')
+                    : require('@/assets/images/ayuda/botonayuda.png')
+                }
                 style={styles.helpButtonImage}
               />
             </TouchableOpacity>
@@ -169,8 +177,8 @@ export default function TabLayout() {
             {showHelp && (
               <View style={[styles.helpPanel, { top: insets.top + 80 }]}>
                 <Image source={bunnyImages[helpIndex]} style={styles.bunnyImage} />
-                <View style={styles.helpBubble}>
-                  <Text style={styles.helpTitle}>Conejito guia</Text>
+                <View style={[styles.helpBubble, glitchAparecio && { borderColor: '#701616' , backgroundColor: '#c27c7c' }]}>
+                  <Text style={[styles.helpTitle, glitchAparecio && { color: '#440000'}]}>Conejito guia</Text>
                   <Text style={styles.helpText}>{currentHelpMessage}</Text>
                 </View>
               </View>
@@ -187,13 +195,17 @@ export default function TabLayout() {
 
           tabBarBackground: () => (
             <Image
-              source={require('@/assets/images/barrainf.png')}
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-              resizeMode="stretch"
-            />
+                source={
+                  glitchAparecio
+                    ? require('@/assets/images/glitched/barrainf_glitched.png')
+                    : require('@/assets/images/barrainf.png')
+                }
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
+                resizeMode="stretch"
+              />
           ),
 
           
@@ -225,7 +237,11 @@ export default function TabLayout() {
           options={{
             tabBarIcon: () => (
               <Image
-                source={require('@/assets/images/mapa.png')}
+                source={
+                  glitchAparecio
+                    ? require('@/assets/images/glitched/mapa_glitched.png')
+                    : require('@/assets/images/mapa.png')
+                }
                 style={styles.iconImage}
               />
             ),
@@ -238,7 +254,11 @@ export default function TabLayout() {
           options={{
             tabBarIcon: () => (
               <Image
-                source={require('@/assets/images/recuerdos.png')}
+                source={
+                  glitchAparecio
+                    ? require('@/assets/images/glitched/recuerdos_glitched.png')
+                    : require('@/assets/images/recuerdos.png')
+                }
                 style={styles.iconImage}
               />
             ),
@@ -251,7 +271,11 @@ export default function TabLayout() {
           options={{
             tabBarIcon: () => (
               <Image
-                source={require('@/assets/images/pistas.png')}
+                source={
+                  glitchAparecio
+                    ? require('@/assets/images/glitched/pistas_glitched.png')
+                    : require('@/assets/images/pistas.png')
+                }
                 style={styles.iconImage}
               />
             ),
@@ -264,7 +288,11 @@ export default function TabLayout() {
           options={{
             tabBarIcon: () => (
               <Image
-                source={require('@/assets/images/perfil.png')}
+                source={
+                  glitchAparecio
+                    ? require('@/assets/images/glitched/perfil_glitched.png')
+                    : require('@/assets/images/perfil.png')
+                }
                 style={styles.iconImage}
               />
             ),

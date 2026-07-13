@@ -53,6 +53,7 @@ export default function MapaScreen() {
     lugaresVisitados,
     capitulosCompletados,
     celularDesbloqueado,
+    glitchAparecio,
     marcarLugarVisitado,
   } = useContext(GameContext);
   const [playerLocation, setPlayerLocation] = useState<PlayerLocation | null>(null);
@@ -332,13 +333,16 @@ export default function MapaScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,
+      glitchAparecio && { backgroundColor: '#180101' }
+    ]}>
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={UNMSM_REGION}
         showsUserLocation
         showsMyLocationButton
+        customMapStyle={glitchAparecio ? glitchMapStyle : []}
       >
         {ubicacionObjetivo?.coordenadas && !objetivoDesbloqueado && (
           <>
@@ -346,14 +350,22 @@ export default function MapaScreen() {
               coordinate={ubicacionObjetivo.coordenadas}
               title="Punto de investigacion"
               description="Hay algo esperando por Azula."
-              pinColor="#c084b6"
+              pinColor={glitchAparecio ? "#5d0d7ce6" : "#c084b6"}
             />
 
             <Circle
               center={ubicacionObjetivo.coordenadas}
               radius={ubicacionObjetivo.radioMetros}
-              strokeColor="rgba(192,132,182,0.9)"
-              fillColor="rgba(192,132,182,0.22)"
+              strokeColor={
+                glitchAparecio
+                  ? "#5d0d7ce6"
+                  : "#c084b6e6"
+              }
+              fillColor={
+                glitchAparecio
+                  ? "#6b377e5b"
+                  : "#c084b638"
+              }
             />
           </>
         )}
@@ -370,15 +382,29 @@ export default function MapaScreen() {
             <Circle
               center={npcPosition}
               radius={ubicacionNPC.radioMetros}
-              strokeColor="rgba(192,132,182,0.9)"
-              fillColor="rgba(192,132,182,0.22)"
+              strokeColor={
+                glitchAparecio
+                  ? "#7a00255b"
+                  : "#c084b6e6"
+              }
+              fillColor={
+                glitchAparecio
+                  ? "#7e374c5b"
+                  : "#c084b638"
+              }
             />
           </>
         )}
       </MapView>
 
       {(DEMO_SKIP_LOCATION_CHECKS || loadingLocation || permissionError || ubicacionObjetivo) && (
-        <View style={styles.statusPanel}>
+        <View style={[
+          styles.statusPanel,
+          glitchAparecio && { 
+            backgroundColor: '#270101', 
+            borderColor: '#fd0000' 
+          }
+        ]}>
           {DEMO_SKIP_LOCATION_CHECKS ? (
             <>
               <Text style={styles.statusText}>Modo expo activo</Text>
@@ -419,7 +445,11 @@ export default function MapaScreen() {
         activeOpacity={0.8}
       >
         <Image
-          source={require('@/assets/images/botonplay.png')}
+          source={
+            glitchAparecio
+              ? require('@/assets/images/glitched/botonplay_glitched.png')
+              : require('@/assets/images/botonplay.png')
+          }
           style={styles.playImage}
         />
       </TouchableOpacity>
@@ -431,6 +461,66 @@ export default function MapaScreen() {
     </View>
   );
 }
+
+const glitchMapStyle = [
+  {
+    elementType: "geometry",
+    stylers: [{ color: "#0A0A0A" }],
+  },
+  {
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#8A5757" }],
+  },
+  {
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#120909" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#1A1111" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#321111" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#B66A6A" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#120707" }],
+  },
+  {
+    featureType: "landscape",
+    elementType: "geometry",
+    stylers: [{ color: "#080808" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "geometry",
+    stylers: [{ color: "#101010" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6E4444" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#111111" }],
+  },
+  {
+    featureType: "administrative",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#7D5B5B" }],
+  },
+];
 
 const styles = StyleSheet.create({
   container: {
