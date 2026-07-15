@@ -1,5 +1,5 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/fonts';
 import { cap2Scenes } from '@/data/chapters';
@@ -9,6 +9,13 @@ import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 export default function Cap2() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    cap2Scenes.forEach((scene) => {
+      const asset = Image.resolveAssetSource(scene.imagen);
+      if (asset?.uri) Image.prefetch(asset.uri);
+    });
+  }, []);
 
   const terminarCapitulo = () => {
     const recuerdo = getMemoryById('cap2_recuerdo1');
@@ -54,6 +61,7 @@ export default function Cap2() {
           source={cap2Scenes[escena].imagen}
           style={styles.image}
           resizeMode="cover"
+          fadeDuration={0}
         />
         <View style={styles.dialogo}>
           <Text style={styles.texto}>{cap2Scenes[escena].texto}</Text>
@@ -65,9 +73,9 @@ export default function Cap2() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'black' },
-  touchableArea: { flex: 1 },
-  image: { width: '100%', height: '100%' },
+  container: { flex: 1, backgroundColor: '#121620' },
+  touchableArea: { flex: 1, backgroundColor: '#121620' },
+  image: { width: '100%', height: '100%', backgroundColor: '#121620' },
   dialogo: {
     position: 'absolute',
     bottom: 0,

@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Audio } from 'expo-av';
 import * as Location from 'expo-location';
 import * as Haptics from 'expo-haptics';
-import MapView, { Circle, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, { Callout, Circle, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { DEMO_SKIP_LOCATION_CHECKS } from '@/config/demo';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
+import { chapters } from '@/data/chapters';
 import { locationUnlocks, locations } from '@/data/locations';
 import { locations_npc } from '@/data/locations_NPC';
 import { getMemoryById } from '@/data/memories';
@@ -20,8 +22,8 @@ type PlayerLocation = {
 const UNMSM_REGION: Region = {
   latitude: -12.05574,
   longitude: -77.08559,
-  latitudeDelta: 0.006,
-  longitudeDelta: 0.006,
+  latitudeDelta: 0.0032,
+  longitudeDelta: 0.0032,
 };
 
 const getDistanceMeters = (
@@ -62,6 +64,7 @@ export default function MapaScreen() {
   const [npcPosition, setNpcPosition] = useState<PlayerLocation | null>(null);
   const movingToEnd = useRef(true);
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
+  const handledUnlocks = useRef<string[]>([]);
 
   const desbloqueoActivo = useMemo(
     () =>
@@ -193,6 +196,49 @@ export default function MapaScreen() {
     }
   };
 
+  const playLocationUnlockSound = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('@/assets/sounds/crystal_sound.mp3'),
+        {
+          shouldPlay: true,
+          volume: (global as any).sfxVolume ?? 1,
+        }
+      );
+
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+    } catch (e) {
+      console.log('error location unlock sound:', e);
+    }
+  };
+
+  const getNextChapterRouteByLocation = useCallback(
+    (lugarId: string) =>
+      chapters.find((chapter) => chapter.requeridoLugarId === lugarId)?.ruta,
+    []
+  );
+
+  const unlockLocationAndOpenChapter = useCallback(async (lugarId: string) => {
+    await playLocationUnlockSound();
+    marcarLugarVisitado(lugarId);
+    const nextChapterRoute = getNextChapterRouteByLocation(lugarId);
+    router.replace((nextChapterRoute ?? '/capitulo') as any);
+  }, [getNextChapterRouteByLocation, marcarLugarVisitado, router]);
+
+  const openNpcMiniChapter = useCallback(() => {
+    router.replace({
+      pathname: '/recuerdo',
+      params: {
+        id: 'cap4_recuerdo1',
+        unlock: '1',
+      },
+    });
+  }, [router]);
+
   const startLocation = async () => {
     if (DEMO_SKIP_LOCATION_CHECKS) {
       setLoadingLocation(false);
@@ -285,11 +331,18 @@ export default function MapaScreen() {
     if (!estaEnObjetivo || !desbloqueoActivo || objetivoDesbloqueado) return;
 
     const unlock = async () => {
+      const unlockId =
+        'lugarId' in desbloqueoActivo
+          ? `lugar:${desbloqueoActivo.lugarId}`
+          : `recuerdo:${desbloqueoActivo.recuerdoId}`;
+
+      if (handledUnlocks.current.includes(unlockId)) return;
+      handledUnlocks.current = [...handledUnlocks.current, unlockId];
+
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
       if ('lugarId' in desbloqueoActivo) {
-        marcarLugarVisitado(desbloqueoActivo.lugarId);
-        router.replace('/capitulo');
+        await unlockLocationAndOpenChapter(desbloqueoActivo.lugarId);
         return;
       }
 
@@ -303,26 +356,41 @@ export default function MapaScreen() {
     };
 
     unlock();
-  }, [estaEnObjetivo, desbloqueoActivo, objetivoDesbloqueado, marcarLugarVisitado, router]);
+  }, [estaEnObjetivo, desbloqueoActivo, objetivoDesbloqueado, unlockLocationAndOpenChapter, router]);
 
   useEffect(() => {
     if (DEMO_SKIP_LOCATION_CHECKS) return;
     if (!interactuarNPC) return;
 
     const unlock = async () => {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (handledUnlocks.current.includes('npc:cap4_recuerdo1')) return;
+      handledUnlocks.current = [...handledUnlocks.current, 'npc:cap4_recuerdo1'];
 
-      router.push({
-        pathname: '/recompensa',
-        params: {
-          id: 'cap4_recuerdo1',
-          tipo: 'recuerdo',
-        },
-      });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await playLocationUnlockSound();
+
+      openNpcMiniChapter();
     };
 
     unlock();
-  }, [interactuarNPC, router]);
+  }, [interactuarNPC, openNpcMiniChapter]);
+
+  const handleDemoNpc = async () => {
+    if (!ubicacionNPC) return;
+
+    await playLocationUnlockSound();
+    openNpcMiniChapter();
+  };
+
+  const handleDemoLocation = async () => {
+    if (!desbloqueoActivo || !('lugarId' in desbloqueoActivo)) return;
+
+    const unlockId = `demo-lugar:${desbloqueoActivo.lugarId}`;
+    if (handledUnlocks.current.includes(unlockId)) return;
+    handledUnlocks.current = [...handledUnlocks.current, unlockId];
+
+    await unlockLocationAndOpenChapter(desbloqueoActivo.lugarId);
+  };
 
   const handlePlay = async () => {
     await playClick();
@@ -342,16 +410,26 @@ export default function MapaScreen() {
         initialRegion={UNMSM_REGION}
         showsUserLocation
         showsMyLocationButton
+        toolbarEnabled={false}
+        mapPadding={{ top: 120, right: 10, bottom: 10, left: 10 }}
         customMapStyle={glitchAparecio ? glitchMapStyle : []}
       >
         {ubicacionObjetivo?.coordenadas && !objetivoDesbloqueado && (
           <>
             <Marker
               coordinate={ubicacionObjetivo.coordenadas}
-              title="Punto de investigacion"
-              description="Hay algo esperando por Azula."
               pinColor={glitchAparecio ? "#5d0d7ce6" : "#c084b6"}
-            />
+            >
+              <Callout tooltip>
+                <View style={[
+                  styles.mapCallout,
+                  glitchAparecio && styles.mapCalloutGlitch,
+                ]}>
+                  <Text style={styles.mapCalloutTitle}>Punto de investigacion</Text>
+                  <Text style={styles.mapCalloutText}>Hay algo esperando por Azula.</Text>
+                </View>
+              </Callout>
+            </Marker>
 
             <Circle
               center={ubicacionObjetivo.coordenadas}
@@ -413,6 +491,16 @@ export default function MapaScreen() {
               <Text style={styles.detailText}>
                 Las ubicaciones no bloquean la historia durante la presentacion.
               </Text>
+              {desbloqueoActivo && 'lugarId' in desbloqueoActivo && (
+                <TouchableOpacity style={styles.retryButton} onPress={handleDemoLocation}>
+                  <Text style={styles.retryText}>Simular llegada al punto</Text>
+                </TouchableOpacity>
+              )}
+              {ubicacionNPC && (
+                <TouchableOpacity style={styles.retryButton} onPress={handleDemoNpc}>
+                  <Text style={styles.retryText}>Probar encuentro NPC</Text>
+                </TouchableOpacity>
+              )}
             </>
           ) : loadingLocation ? (
             <View style={styles.loadingRow}>
@@ -615,5 +703,35 @@ const styles = StyleSheet.create({
       width: 30,
       height: 30,
       transform: [{ scale: 1.4 }],
+  },
+
+  mapCallout: {
+    width: 230,
+    backgroundColor: 'rgba(29, 20, 35, 0.96)',
+    borderColor: '#c084b6',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+
+  mapCalloutGlitch: {
+    backgroundColor: 'rgba(43, 0, 0, 0.96)',
+    borderColor: '#fd0000',
+  },
+
+  mapCalloutTitle: {
+    fontFamily: Fonts.sunshine,
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+
+  mapCalloutText: {
+    fontFamily: Fonts.sunshine,
+    color: '#d8c7d4',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 2,
   },
 });

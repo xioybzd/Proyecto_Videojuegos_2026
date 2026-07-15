@@ -16,7 +16,7 @@ export const chapters: Chapter[] = [
     imagen: require('@/assets/images/capituloimgs/capitulo2/cap2_01.jpg'),
     ruta: '/capitulo/cap2',
     memoria: 20,
-    requeridoPistaId: 'cap1_pista1',
+    requeridoLugarId: 'biblioteca-central',
   },
   {
     id: 'cap3',
@@ -25,7 +25,7 @@ export const chapters: Chapter[] = [
     imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_01.jpg'),
     ruta: '/capitulo/cap3',
     memoria: 40,
-    requeridoRecuerdoId: 'cap2_recuerdo1',
+    requeridoLugarId: 'tubos',
   },
   {
     id: 'cap4',
@@ -40,7 +40,8 @@ export const chapters: Chapter[] = [
     id: 'cap5',
     titulo: 'Capitulo 5',
     descripcion: 'Proximamente',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    ruta: '/capitulo/cap5',
     memoria: 80,
     requeridoLugarId: 'fcm',
   },
@@ -48,17 +49,19 @@ export const chapters: Chapter[] = [
     id: 'cap6',
     titulo: 'Capitulo 6',
     descripcion: 'Proximamente',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    ruta: '/capitulo/cap6',
     memoria: 90,
-    requeridoRecuerdoId: 'cap5_recuerdo1',
+    requeridoLugarId: 'parque-asmaticos',
   },
   {
     id: 'cap7',
     titulo: 'Capitulo 7 - Final',
     descripcion: 'Proximamente',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    ruta: '/capitulo/cap7',
     memoria: 100,
-    requeridoRecuerdoId: 'cap6_recuerdo1',
+    requeridoLugarId: 'huaca',
   },
 ];
 
@@ -186,7 +189,7 @@ export const cap3Scenes: ChapterScene[] = [
   },
   {
     id: 'cap3_escena5',
-    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_05.jpg'),
+    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_05_v2.jpg'),
     texto: 'Debajo del arbol, entre las raices, habia una fotografia doblada.',
   },
   {
@@ -196,7 +199,7 @@ export const cap3Scenes: ChapterScene[] = [
   },
   {
     id: 'cap3_escena7',
-    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_07.jpg'),
+    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_07_v2.jpg'),
     texto: '...Ben.',
   },
   {
@@ -236,7 +239,7 @@ export const cap3Scenes: ChapterScene[] = [
   },
   {
     id: 'cap3_escena15',
-    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_15.jpg'),
+    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_15_v2.jpg'),
     texto: 'Que estas haciendo...?',
   },
   {
@@ -256,7 +259,7 @@ export const cap3Scenes: ChapterScene[] = [
   },
   {
     id: 'cap3_escena19',
-    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_19.jpg'),
+    imagen: require('@/assets/images/capituloimgs/capitulo3/cap3_19_v2.jpg'),
     texto: 'Janna investigaba algo.\n\nY Ben estaba alli.',
   },
 ];
@@ -331,5 +334,29 @@ export const cap4Scenes: ChapterScene[] = [
     id: 'cap4_escena14',
     imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_15.jpg'),
     texto: 'Quimica no es el inicio...\n\nSolo la fachada...\n\nQue se supone que significa eso?',
+  },
+];
+
+export const cap5Scenes: ChapterScene[] = [
+  {
+    id: 'cap5_escena1',
+    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    texto: 'Capitulo 5 en borrador.\n\nAqui ira la escena real de FCM.',
+  },
+];
+
+export const cap6Scenes: ChapterScene[] = [
+  {
+    id: 'cap6_escena1',
+    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    texto: 'Capitulo 6 en borrador.\n\nAqui ira la escena real del Parque Asmaticos.',
+  },
+];
+
+export const cap7Scenes: ChapterScene[] = [
+  {
+    id: 'cap7_escena1',
+    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    texto: 'Capitulo 7 en borrador.\n\nNo confies en tus recuerdos.',
   },
 ];

@@ -20,7 +20,7 @@ export default function Cap4() {
 
   const terminarCapitulo = () => {
     marcarCapituloCompletado('cap4');
-    router.replace('/capitulo');
+    router.replace('/(tabs)/mapa');
   };
 
   const siguienteEscena = () => {
@@ -54,6 +54,7 @@ export default function Cap4() {
           source={cap4Scenes[escena].imagen}
           style={styles.image}
           resizeMode="cover"
+          fadeDuration={0}
         />
         <View style={styles.dialogo}>
           <Text style={styles.texto}>{cap4Scenes[escena].texto}</Text>
@@ -65,9 +66,9 @@ export default function Cap4() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'black' },
-  touchableArea: { flex: 1 },
-  image: { width: '100%', height: '100%' },
+  container: { flex: 1, backgroundColor: '#141218' },
+  touchableArea: { flex: 1, backgroundColor: '#141218' },
+  image: { width: '100%', height: '100%', backgroundColor: '#141218' },
   dialogo: {
     position: 'absolute',
     bottom: 0,

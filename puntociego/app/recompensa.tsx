@@ -4,14 +4,13 @@ import { useContext, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
-import { DEMO_MODE, demoAutoUnlocks } from '@/config/demo';
 import { getClueById } from '@/data/clues';
 import { getMemoryById } from '@/data/memories';
 import type { RewardType } from '@/data/types';
 
 export default function Recompensa() {
   const params = useLocalSearchParams();
-  const { agregarPista, agregarRecuerdo, marcarLugarVisitado } = useContext(GameContext);
+  const { agregarPista, agregarRecuerdo } = useContext(GameContext);
 
   const tipo = params.tipo as RewardType;
   const id = params.id as string;
@@ -57,24 +56,9 @@ export default function Recompensa() {
 
     if (tipo === 'recuerdo') {
       agregarRecuerdo(item);
-      if (item.lugarId) marcarLugarVisitado(item.lugarId);
       router.replace('/(tabs)/recuerdos');
     } else {
       agregarPista(item);
-      const demoUnlock = DEMO_MODE ? demoAutoUnlocks[item.id] : undefined;
-
-      if (demoUnlock) {
-        const recuerdoDemo = getMemoryById(demoUnlock.recuerdoId);
-
-        if (recuerdoDemo) {
-          agregarRecuerdo(recuerdoDemo);
-        }
-
-        if (demoUnlock.lugarId) {
-          marcarLugarVisitado(demoUnlock.lugarId);
-        }
-      }
-
       router.replace('/(tabs)/pistas');
     }
   };

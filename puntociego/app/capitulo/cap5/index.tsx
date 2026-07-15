@@ -1,33 +1,38 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/fonts';
-import { GameContext } from '@/context/GameContext';
-import { cap3Scenes } from '@/data/chapters';
+import { cap5Scenes } from '@/data/chapters';
+import { getClueById } from '@/data/clues';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 
-export default function Cap3() {
-  const { desbloquearCelular } = useContext(GameContext);
-  const { aparicionGlitch } = useContext(GameContext);
+export default function Cap5() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    cap3Scenes.forEach((scene) => {
+    cap5Scenes.forEach((scene) => {
       const asset = Image.resolveAssetSource(scene.imagen);
       if (asset?.uri) Image.prefetch(asset.uri);
     });
   }, []);
 
   const terminarCapitulo = () => {
-    desbloquearCelular();
-    aparicionGlitch();
-    router.replace('/(tabs)/mapa');
+    const pista = getClueById('cap5_pista1');
+    if (!pista) return;
+
+    router.push({
+      pathname: '/recompensa',
+      params: {
+        id: pista.id,
+        tipo: 'pista',
+      },
+    });
   };
 
   const siguienteEscena = () => {
     setEscena((prev) => {
-      if (prev < cap3Scenes.length - 1) return prev + 1;
+      if (prev < cap5Scenes.length - 1) return prev + 1;
       terminarCapitulo();
       return prev;
     });
@@ -53,13 +58,13 @@ export default function Cap3() {
     >
       <TouchableOpacity style={styles.touchableArea} onPress={manejarToque}>
         <Image
-          source={cap3Scenes[escena].imagen}
+          source={cap5Scenes[escena].imagen}
           style={styles.image}
           resizeMode="cover"
           fadeDuration={0}
         />
         <View style={styles.dialogo}>
-          <Text style={styles.texto}>{cap3Scenes[escena].texto}</Text>
+          <Text style={styles.texto}>{cap5Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
       <ChapterVolumeControl />
@@ -68,14 +73,14 @@ export default function Cap3() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#111016' },
-  touchableArea: { flex: 1, backgroundColor: '#111016' },
-  image: { width: '100%', height: '100%', backgroundColor: '#111016' },
+  container: { flex: 1, backgroundColor: '#141218' },
+  touchableArea: { flex: 1, backgroundColor: '#141218' },
+  image: { width: '100%', height: '100%', backgroundColor: '#141218' },
   dialogo: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    backgroundColor: 'rgba(26, 25, 33, 0.78)',
+    backgroundColor: 'rgba(30, 28, 34, 0.78)',
     padding: 20,
   },
   texto: {

@@ -213,6 +213,11 @@ export default function TabLayout() {
             height: 70,
             backgroundColor: 'transparent',
             borderTopWidth: 0,
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            elevation: 20,
           },
 
           tabBarItemStyle: {
