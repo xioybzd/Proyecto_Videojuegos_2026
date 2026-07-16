@@ -59,7 +59,7 @@ export default function HomeScreen() {
     
     setTimeout(() => {
       // Usamos push para que pueda regresar a esta pantalla fácilmente
-      router.push('/tutorial'); 
+      router.push('/capitulo/tutorial');
     }, 120);
   };
 
