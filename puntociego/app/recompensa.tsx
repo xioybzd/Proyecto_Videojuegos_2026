@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
-import { useContext, useEffect } from 'react';
-import { Audio } from 'expo-av';
-import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
+import { GameContext } from '@/context/GameContext';
 import { getClueById } from '@/data/clues';
 import { getMemoryById } from '@/data/memories';
 import type { RewardType } from '@/data/types';
+import { Audio } from 'expo-av';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useContext, useEffect } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Recompensa() {
   const params = useLocalSearchParams();
@@ -31,7 +31,7 @@ export default function Recompensa() {
           require('@/assets/sounds/ting.mp3'),
           {
             shouldPlay: true,
-            volume: (global as any).sfxVolume ?? 1,
+            volume: ((global as any).sfxVolume ?? 1) * 0.35,
           }
         );
 

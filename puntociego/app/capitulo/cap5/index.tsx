@@ -1,19 +1,15 @@
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 import { Fonts } from '@/constants/fonts';
-import { GameContext } from '@/context/GameContext'; // 2. Importamos el GameContext
 import { cap5Scenes } from '@/data/chapters';
 import { getClueById } from '@/data/clues';
 import { useChapterAudio } from '@/hooks/use-chapter-audio';
 import { router } from 'expo-router';
-import { useContext, useEffect, useState } from 'react'; // 1. Importamos useContext
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Cap5() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
-
-  // 3. Extraemos la función para guardar el progreso del capítulo
-  const { marcarCapituloCompletado } = useContext(GameContext);
 
   const { chapterMusic, stopChapterMusic } = useChapterAudio(
     require('@/assets/sounds/cap5_music.mp3')
@@ -31,11 +27,6 @@ export default function Cap5() {
     if (!pista) return;
 
     await stopChapterMusic();
-
-    // 4. Guardamos el progreso oficial del capítulo 5 en el estado global
-    if (marcarCapituloCompletado) {
-      marcarCapituloCompletado('cap5');
-    }
 
     router.push({
       pathname: '/recompensa',

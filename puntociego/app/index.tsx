@@ -53,12 +53,13 @@ export default function HomeScreen() {
     }, 120);
   };
 
-  // 📖 BOTÓN TUTORIAL
+  // 📖 BOTÓN TUTORIAL (NUEVO)
   const handleTutorial = async () => {
     await playClick();
     
     setTimeout(() => {
-      router.push('/capitulo/tutorial'); 
+      // Usamos push para que pueda regresar a esta pantalla fácilmente
+      router.push('/capitulo/tutorial');
     }, 120);
   };
 
@@ -129,7 +130,7 @@ export default function HomeScreen() {
           />
         </TouchableOpacity>
 
-        {/* 📖 TUTORIAL */}
+        {/* 📖 TUTORIAL (NUEVO RECUADRO) */}
         <TouchableOpacity
           style={styles.tutorialButton}
           onPress={handleTutorial}
@@ -138,7 +139,6 @@ export default function HomeScreen() {
           <Text style={styles.tutorialText}>Tutorial</Text>
         </TouchableOpacity>
       </View>
-
       {/* 🔊 BOTÓN VOLUMEN */}
       <TouchableOpacity
         style={styles.volumeButton}
@@ -257,13 +257,14 @@ const styles = StyleSheet.create({
     opacity: 0.25,
   },
 
+  /* NUEVO CONTENEDOR PARA LOS BOTONES */
   buttonsContainer: {
     position: 'absolute',
     bottom: 120,
     alignSelf: 'center',
-    flexDirection: 'row', 
+    flexDirection: 'row', // Los pone uno al lado del otro
     alignItems: 'center',
-    gap: 15, 
+    gap: 15, // Espacio entre el botón jugar y el tutorial
   },
 
   playButton: {
@@ -276,13 +277,14 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
+  /* ESTILOS DEL BOTÓN TUTORIAL (Recuadro) */
   tutorialButton: {
     width: 140,
     height: 60,
-    backgroundColor: 'rgba(192, 132, 182, 0.8)', // #c084b6 semi-transparente
+    backgroundColor: 'rgba(192, 132, 182, 0.8)', // Color #c084b6 semi-transparente
     borderWidth: 2,
     borderColor: '#ead7e6',
-    borderRadius: 15,
+    borderRadius: 15, // Bordes redondeados pero sigue siendo rectangular
     justifyContent: 'center',
     alignItems: 'center',
   },

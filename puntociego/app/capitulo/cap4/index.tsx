@@ -1,11 +1,11 @@
-import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
-import { router } from 'expo-router';
+import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 import { Fonts } from '@/constants/fonts';
 import { GameContext } from '@/context/GameContext';
 import { cap4Scenes } from '@/data/chapters';
-import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 import { useChapterAudio } from '@/hooks/use-chapter-audio';
+import { router } from 'expo-router';
+import { useContext, useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Cap4() {
   const { marcarCapituloCompletado } = useContext(GameContext);
@@ -67,7 +67,7 @@ export default function Cap4() {
           <Text style={styles.texto}>{cap4Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
-      <ChapterVolumeControl />
+      <ChapterVolumeControl musicRef={chapterMusic} />
     </View>
   );
 }
