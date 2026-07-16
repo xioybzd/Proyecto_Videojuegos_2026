@@ -48,8 +48,8 @@ export const chapters: Chapter[] = [
   {
     id: 'cap6',
     titulo: 'Capitulo 6',
-    descripcion: 'Proximamente',
-    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    descripcion: 'El Parque de los Asmaticos guarda una prueba de Janna.',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_01.jpg'),
     ruta: '/capitulo/cap6',
     memoria: 90,
     requeridoLugarId: 'parque-asmaticos',
@@ -408,8 +408,63 @@ export const cap5Scenes: ChapterScene[] = [
 export const cap6Scenes: ChapterScene[] = [
   {
     id: 'cap6_escena1',
-    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
-    texto: 'Capitulo 6 en borrador.\n\nAqui ira la escena real del Parque Asmaticos.',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_01.jpg'),
+    texto: 'Azula (pensamiento)\nEste lugar...\n\nSe siente completamente distinto a Tubos.',
+  },
+  {
+    id: 'cap6_escena2',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_02.jpg'),
+    texto: 'Azula (pensamiento)\nJhon dijo que venian aqui por las noches...\n\nPara esconderse.\n\nPara tomar, fumar...\n\nY hacer cosas que nadie debia ver.',
+  },
+  {
+    id: 'cap6_escena3',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_03.jpg'),
+    texto: 'Azula (pensamiento)\nTodo se parece...\n\nPero nada encaja.\n\nDesde donde tomaron esas fotos?',
+  },
+  {
+    id: 'cap6_escena4',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_04.jpg'),
+    texto: 'Azula\nHola?\n\n(Silencio.)\n\nAzula\nSe que hay alguien ahi.',
+  },
+  {
+    id: 'cap6_escena5',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_05.jpg'),
+    texto: 'Chico\nOye, que te pasa?\n\nPor que interrumpes a la gente?\n\nAzula\nYo solo escuche un ruido.',
+  },
+  {
+    id: 'cap6_escena6',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_06.jpg'),
+    texto: 'Chica\nQue quieres?\n\nEstas siguiendo gente o que?\n\nAzula\nNo. Yo estaba buscando algo.\n\nChica\nPues busca en otro lado.',
+  },
+  {
+    id: 'cap6_escena7',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_07.jpg'),
+    texto: 'Azula\nEspera...\n\nTu apareces en unas fotos.\n\nChico\nNo se de que hablas.\n\nAzula\nJanna tenia fotos tuyas.\n\nChica\nYa, largate.',
+  },
+  {
+    id: 'cap6_escena8',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_08.jpg'),
+    texto: 'Azula\nConocen a Ben?\n\nChico\nNo.\n\nAzula\nSi lo conoces.\n\nTambien aparecia en esas fotos.\n\nChico\nTe dije que no se de que hablas.',
+  },
+  {
+    id: 'cap6_escena9',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_09.jpg'),
+    texto: 'Azula\nQue paso con Janna?\n\nChico\nNo metas tu nariz donde no debes.\n\nAzula\nElla los estaba siguiendo.\n\nQue descubrio?',
+  },
+  {
+    id: 'cap6_escena10',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_10.jpg'),
+    texto: 'Chico\nTu amiga hablaba demasiado.\n\nAzula\nQue le hicieron?\n\nChico\nTe conviene dejar de hacer preguntas.',
+  },
+  {
+    id: 'cap6_escena11',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_11.jpg'),
+    texto: 'Chico\nAprende a meterte en tus propios asuntos.\n\nChica\nVamonos de aqui.',
+  },
+  {
+    id: 'cap6_escena12',
+    imagen: require('@/assets/images/capituloimgs/capitulo6/cap6_12.jpg'),
+    texto: 'Azula (susurrando)\nEste conejito...\n\nEs el llavero de Janna.\n\nAzula (pensamiento)\nQue hacia el llavero de Janna en este lugar?',
   },
 ];
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/fonts';
 import { cap6Scenes } from '@/data/chapters';
-import { getClueById } from '@/data/clues';
+import { getMemoryById } from '@/data/memories';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 
 export default function Cap6() {
@@ -18,14 +18,14 @@ export default function Cap6() {
   }, []);
 
   const terminarCapitulo = () => {
-    const pista = getClueById('cap6_pista1');
-    if (!pista) return;
+    const recuerdo = getMemoryById('cap6_recuerdo1');
+    if (!recuerdo) return;
 
     router.push({
       pathname: '/recompensa',
       params: {
-        id: pista.id,
-        tipo: 'pista',
+        id: recuerdo.id,
+        tipo: 'recuerdo',
       },
     });
   };
