@@ -8,8 +8,7 @@ import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 import { useChapterAudio } from '@/hooks/use-chapter-audio';
 
 export default function Cap3() {
-  const { desbloquearCelular } = useContext(GameContext);
-  const { aparicionGlitch } = useContext(GameContext);
+  const { desbloquearCelular, aparicionGlitch, marcarCapituloCompletado } = useContext(GameContext);
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
 
@@ -25,6 +24,7 @@ export default function Cap3() {
   }, []);
 
   const terminarCapitulo = async () => {
+    marcarCapituloCompletado('cap3');
     desbloquearCelular();
     aparicionGlitch();
 

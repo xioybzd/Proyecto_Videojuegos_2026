@@ -1,5 +1,6 @@
 import { createContext, useState, ReactNode } from 'react';
 import type { GameItem } from '@/data/types';
+import { chapters } from '@/data/chapters';
 
 type GameContextType = {
   pistas: GameItem[];
@@ -46,7 +47,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [celularDesbloqueado, setCelularDesbloqueado] = useState(false);
   const [glitchAparecio, setAparicionGlitch] = useState(false);
 
-  const memoriaRecuperada = recuerdos.length * 20;
+  const memoriaRecuperada = capitulosCompletados.reduce((maxMemoria, capituloId) => {
+    const chapter = chapters.find((item) => item.id === capituloId);
+    return Math.max(maxMemoria, chapter?.memoria ?? 0);
+  }, 0);
 
   const agregarPista = (nuevo: GameItem) => {
     setPistas((prev) => {

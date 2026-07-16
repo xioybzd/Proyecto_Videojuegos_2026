@@ -1,12 +1,14 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/fonts';
 import { cap7Scenes } from '@/data/chapters';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
 import { useChapterAudio } from '@/hooks/use-chapter-audio';
+import { GameContext } from '@/context/GameContext';
 
 export default function Cap7() {
+  const { marcarCapituloCompletado } = useContext(GameContext);
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
 
@@ -22,6 +24,7 @@ export default function Cap7() {
   }, []);
 
   const terminarCapitulo = async () => {
+    marcarCapituloCompletado('cap7');
     await stopChapterMusic();
     router.replace('/creditos');
   };
