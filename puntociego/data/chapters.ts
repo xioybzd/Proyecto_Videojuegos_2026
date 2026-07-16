@@ -39,8 +39,8 @@ export const chapters: Chapter[] = [
   {
     id: 'cap5',
     titulo: 'Capitulo 5',
-    descripcion: 'Proximamente',
-    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    descripcion: 'FCM guarda una parte de la historia.',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_01.jpg'),
     ruta: '/capitulo/cap5',
     memoria: 80,
     requeridoLugarId: 'fcm',
@@ -340,8 +340,68 @@ export const cap4Scenes: ChapterScene[] = [
 export const cap5Scenes: ChapterScene[] = [
   {
     id: 'cap5_escena1',
-    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
-    texto: 'Capitulo 5 en borrador.\n\nAqui ira la escena real de FCM.',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_01.jpg'),
+    texto: 'FCM no parecia una respuesta.\n\nParecia una advertencia.',
+  },
+  {
+    id: 'cap5_escena2',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_02.jpg'),
+    texto: 'Azula\nSi Janna dejo algo aqui, alguien tuvo que verlo.',
+  },
+  {
+    id: 'cap5_escena3',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_03.jpg'),
+    texto: 'El lugar estaba demasiado tranquilo para todo lo que escondia.',
+  },
+  {
+    id: 'cap5_escena4',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_04.jpg'),
+    texto: 'Cada pasillo parecia devolverme una version distinta de la misma duda.',
+  },
+  {
+    id: 'cap5_escena5',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_05.jpg'),
+    texto: 'Janna habia seguido el rastro mucho antes que yo.',
+  },
+  {
+    id: 'cap5_escena6',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_06.jpg'),
+    texto: 'Y si ella llego hasta aqui...\n\nEntonces no estaba imaginando nada.',
+  },
+  {
+    id: 'cap5_escena7',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_07.jpg'),
+    texto: 'Azula\nJhon... que encontraste?',
+  },
+  {
+    id: 'cap5_escena8',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_08.jpg'),
+    texto: 'El archivo no tenia nombre claro.\n\nSolo una marca repetida.',
+  },
+  {
+    id: 'cap5_escena9',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_09.jpg'),
+    texto: 'La misma señal.\n\nEl mismo error.',
+  },
+  {
+    id: 'cap5_escena10',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_10.jpg'),
+    texto: 'No era una pista dejada al azar.',
+  },
+  {
+    id: 'cap5_escena11',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_11.jpg'),
+    texto: 'Era una direccion.',
+  },
+  {
+    id: 'cap5_escena12',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_12.jpg'),
+    texto: 'Parque Asmaticos.',
+  },
+  {
+    id: 'cap5_escena13',
+    imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_13.jpg'),
+    texto: 'Si queria entender lo que Janna vio...\n\ntenia que seguir caminando.',
   },
 ];
 
