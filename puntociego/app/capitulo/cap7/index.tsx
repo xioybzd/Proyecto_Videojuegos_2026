@@ -21,12 +21,18 @@ export default function Cap7() {
     });
   }, []);
 
+  const terminarCapitulo = async () => {
+    await stopChapterMusic();
+    router.replace('/creditos');
+  };
+
   const siguienteEscena = () => {
-    setEscena((prev) => {
-      if (prev < cap7Scenes.length - 1) return prev + 1;
-      router.replace('/(tabs)/mapa');
-      return prev;
-    });
+    if (escena >= cap7Scenes.length - 1) {
+      terminarCapitulo();
+      return;
+    }
+
+    setEscena((prev) => prev + 1);
   };
 
   const anteriorEscena = () => {
@@ -34,6 +40,11 @@ export default function Cap7() {
   };
 
   const manejarToque = (e: any) => {
+    if (escena >= cap7Scenes.length - 1) {
+      terminarCapitulo();
+      return;
+    }
+
     const x = e.nativeEvent.locationX;
     if (x > width / 2) {
       siguienteEscena();
@@ -54,11 +65,13 @@ export default function Cap7() {
           resizeMode="cover"
           fadeDuration={0}
         />
-        <View style={styles.dialogo}>
-          <Text style={styles.texto}>{cap7Scenes[escena].texto}</Text>
-        </View>
+        {cap7Scenes[escena].texto.length > 0 && (
+          <View style={styles.dialogo}>
+            <Text style={styles.texto}>{cap7Scenes[escena].texto}</Text>
+          </View>
+        )}
       </TouchableOpacity>
-      <ChapterVolumeControl />
+      <ChapterVolumeControl musicRef={chapterMusic} />
     </View>
   );
 }

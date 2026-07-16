@@ -70,7 +70,7 @@ export default function Cap3() {
           <Text style={styles.texto}>{cap3Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
-      <ChapterVolumeControl />
+      <ChapterVolumeControl musicRef={chapterMusic} />
     </View>
   );
 }

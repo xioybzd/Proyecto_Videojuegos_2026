@@ -57,8 +57,8 @@ export const chapters: Chapter[] = [
   {
     id: 'cap7',
     titulo: 'Capitulo 7 - Final',
-    descripcion: 'Proximamente',
-    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
+    descripcion: 'La verdad espera en la Huaca.',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_01.jpg'),
     ruta: '/capitulo/cap7',
     memoria: 100,
     requeridoLugarId: 'huaca',
@@ -471,7 +471,72 @@ export const cap6Scenes: ChapterScene[] = [
 export const cap7Scenes: ChapterScene[] = [
   {
     id: 'cap7_escena1',
-    imagen: require('@/assets/images/capituloimgs/borrador_caps.jpg'),
-    texto: 'Capitulo 7 en borrador.\n\nNo confies en tus recuerdos.',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_01.jpg'),
+    texto: 'Azula (pensamiento)\n"Nos encontramos en la Huaca..."\n\n"Janna... con quien viniste?"',
+  },
+  {
+    id: 'cap7_escena2',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_02.jpg'),
+    texto: '',
+  },
+  {
+    id: 'cap7_escena3',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_03.jpg'),
+    texto: 'Janna\nYa se quien mueve todo.\n\nAzula\nBen?\n\nJanna\nNo exactamente.',
+  },
+  {
+    id: 'cap7_escena4',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_04.jpg'),
+    texto: 'Azula\nEntonces habla claro.\n\nJanna\nTengo miedo de como vas a reaccionar.\n\nAzula\nDonde?\n\nJanna\nEn la Huaca.',
+  },
+  {
+    id: 'cap7_escena5',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_05.jpg'),
+    texto: 'Azula (pensamiento)\n"No recordaba esta conversacion..."\n\n"Por que la olvide?"',
+  },
+  {
+    id: 'cap7_escena6',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_06.jpg'),
+    texto: 'Azula\n...\n\nEs de Janna...',
+  },
+  {
+    id: 'cap7_escena7',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_07.jpg'),
+    texto: 'Janna\nAzula... escuchame.\n\nYa se la verdad.',
+  },
+  {
+    id: 'cap7_escena8',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_08.jpg'),
+    texto: 'Azula\nSobre Ben?\n\nJanna\nNo es como tu crees.',
+  },
+  {
+    id: 'cap7_escena9',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_09.jpg'),
+    texto: 'Janna\nLa red existe.\n\nLos brownies...\n\nEl alcohol...\n\nLas entregas...\n\nTodo eso es real.\n\nAzula\nTe dije que Ben estaba metido.',
+  },
+  {
+    id: 'cap7_escena10',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_10.jpg'),
+    texto: 'Janna\nBen no es quien crees.\n\nNo quiero hacerte dano.\n\nAzula\nDeja de hablar de el!',
+  },
+  {
+    id: 'cap7_escena11',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_11.jpg'),
+    texto: 'Ben (voz)\n"No le creas."\n\n"Quiere destruirnos."\n\n"Sabe demasiado."\n\nAzula\nCallate!',
+  },
+  {
+    id: 'cap7_escena12',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_12.jpg'),
+    texto: '',
+  },
+  {
+    id: 'cap7_escena13',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_13.jpg'),
+    texto: 'Azula (pensamiento)\n"Ben..."\n\n"Nunca estuvo aqui."',
+  },
+  {
+    id: 'cap7_escena14',
+    imagen: require('@/assets/images/capituloimgs/capitulo7/cap7_14.jpg'),
+    texto: 'Azula (susurrando)\nFui yo...',
   },
 ];

@@ -31,7 +31,7 @@ export default function Recompensa() {
           require('@/assets/sounds/ting.mp3'),
           {
             shouldPlay: true,
-            volume: (global as any).sfxVolume ?? 1,
+            volume: ((global as any).sfxVolume ?? 1) * 0.35,
           }
         );
 

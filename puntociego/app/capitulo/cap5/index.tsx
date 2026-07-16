@@ -74,7 +74,7 @@ export default function Cap5() {
           <Text style={styles.texto}>{cap5Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
-      <ChapterVolumeControl />
+      <ChapterVolumeControl musicRef={chapterMusic} />
     </View>
   );
 }

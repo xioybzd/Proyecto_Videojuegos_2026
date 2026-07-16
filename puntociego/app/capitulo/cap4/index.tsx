@@ -67,7 +67,7 @@ export default function Cap4() {
           <Text style={styles.texto}>{cap4Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
-      <ChapterVolumeControl />
+      <ChapterVolumeControl musicRef={chapterMusic} />
     </View>
   );
 }
