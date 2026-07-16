@@ -29,7 +29,7 @@ export const clues: GameItem[] = [
     id: 'cap5_pista1',
     titulo: 'Parque Asmaticos',
     descripcion: 'El siguiente fragmento espera en el Parque Asmaticos.',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    imagen: require('@/assets/images/pistas/parqueasma.jpg'),
     capituloId: 'cap5',
     lugarId: 'parque-asmaticos',
   },

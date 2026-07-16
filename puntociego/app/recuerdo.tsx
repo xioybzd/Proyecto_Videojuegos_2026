@@ -1,20 +1,40 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { GameContext } from '@/context/GameContext';
 import { Fonts } from '@/constants/fonts';
-import { memoryScenes } from '@/data/memories';
+import { getMemoryById, memoryScenes } from '@/data/memories';
 
 export default function RecuerdoScreen() {
   const params = useLocalSearchParams();
   const id = params.id as string;
-  const scenes = memoryScenes[id] ?? [];
+  const unlockOnFinish = params.unlock === '1';
+  const scenes = useMemo(() => memoryScenes[id] ?? [], [id]);
+  const memory = getMemoryById(id);
+  const { agregarRecuerdo, marcarLugarVisitado } = useContext(GameContext);
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    scenes.forEach((scene) => {
+      const asset = Image.resolveAssetSource(scene.imagen);
+      if (asset?.uri) Image.prefetch(asset.uri);
+    });
+  }, [scenes]);
+
+  const terminarRecuerdo = () => {
+    if (unlockOnFinish && memory) {
+      agregarRecuerdo(memory);
+      if (memory.lugarId) marcarLugarVisitado(memory.lugarId);
+    }
+
+    router.replace('/(tabs)/recuerdos');
+  };
 
   const siguienteEscena = () => {
     setEscena((prev) => {
       if (prev < scenes.length - 1) return prev + 1;
-      router.replace('/(tabs)/recuerdos');
+      terminarRecuerdo();
       return prev;
     });
   };
@@ -53,6 +73,7 @@ export default function RecuerdoScreen() {
           source={scenes[escena].imagen}
           style={styles.image}
           resizeMode="cover"
+          fadeDuration={0}
         />
         <View style={styles.dialogo}>
           <Text style={styles.texto}>{scenes[escena].texto}</Text>
@@ -64,8 +85,8 @@ export default function RecuerdoScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'black' },
-  touchableArea: { flex: 1 },
-  image: { width: '100%', height: '100%' },
+  touchableArea: { flex: 1, backgroundColor: '#151018' },
+  image: { width: '100%', height: '100%', backgroundColor: '#151018' },
   dialogo: {
     position: 'absolute',
     bottom: 0,

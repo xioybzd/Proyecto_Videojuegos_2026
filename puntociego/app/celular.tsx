@@ -6,14 +6,13 @@ import { GameContext } from '@/context/GameContext';
 import { getClueById } from '@/data/clues';
 
 export default function CelularScreen() {
-  const { agregarPista, marcarLugarVisitado } = useContext(GameContext);
+  const { agregarPista } = useContext(GameContext);
 
   const cerrarCelular = () => {
     const pista = getClueById('cel_pista_comedor');
     if (pista) agregarPista(pista);
-    marcarLugarVisitado('comedor-sanmarquino');
 
-    router.replace('/capitulo');
+    router.replace('/(tabs)/mapa');
   };
 
   return (

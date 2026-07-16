@@ -1,23 +1,23 @@
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Text,
   Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
+import { Fonts } from '@/constants/fonts';
 import Slider from '@react-native-community/slider';
+import { ResizeMode, Video } from 'expo-av';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ResizeMode, Video } from 'expo-av';
-import { Fonts } from '@/constants/fonts';
 
 export default function HomeScreen() {
   const router = useRouter();
   const videoRef = useRef(null);
 
-  //  valores globales
+  // valores globales
   const [musicVolume, setMusicVolume] = useState(
     (global as any).musicVolume ?? 0.5
   );
@@ -50,6 +50,16 @@ export default function HomeScreen() {
 
     setTimeout(() => {
       router.replace('/(tabs)/mapa');
+    }, 120);
+  };
+
+  // 📖 BOTÓN TUTORIAL (NUEVO)
+  const handleTutorial = async () => {
+    await playClick();
+    
+    setTimeout(() => {
+      // Usamos push para que pueda regresar a esta pantalla fácilmente
+      router.push('/tutorial'); 
     }, 120);
   };
 
@@ -107,18 +117,28 @@ export default function HomeScreen() {
 
       <View style={styles.overlay} />
 
-      {/* 🎮 JUGAR */}
-      <TouchableOpacity
-        style={styles.playButton}
-        onPress={handlePlay}
-        activeOpacity={0.8}
-      >
-        <Image
-          source={require('@/assets/images/jugar.png')}
-          style={styles.buttonImage}
-        />
-      </TouchableOpacity>
+      {/* 🎮 CONTENEDOR DE BOTONES JUGAR Y TUTORIAL */}
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity
+          style={styles.playButton}
+          onPress={handlePlay}
+          activeOpacity={0.8}
+        >
+          <Image
+            source={require('@/assets/images/jugar.png')}
+            style={styles.buttonImage}
+          />
+        </TouchableOpacity>
 
+        {/* 📖 TUTORIAL (NUEVO RECUADRO) */}
+        <TouchableOpacity
+          style={styles.tutorialButton}
+          onPress={handleTutorial}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.tutorialText}>Tutorial</Text>
+        </TouchableOpacity>
+      </View>
       {/* 🔊 BOTÓN VOLUMEN */}
       <TouchableOpacity
         style={styles.volumeButton}
@@ -237,10 +257,17 @@ const styles = StyleSheet.create({
     opacity: 0.25,
   },
 
-  playButton: {
+  /* NUEVO CONTENEDOR PARA LOS BOTONES */
+  buttonsContainer: {
     position: 'absolute',
     bottom: 120,
     alignSelf: 'center',
+    flexDirection: 'row', // Los pone uno al lado del otro
+    alignItems: 'center',
+    gap: 15, // Espacio entre el botón jugar y el tutorial
+  },
+
+  playButton: {
     width: 180,
     height: 70,
   },
@@ -248,6 +275,24 @@ const styles = StyleSheet.create({
   buttonImage: {
     width: '100%',
     height: '100%',
+  },
+
+  /* ESTILOS DEL BOTÓN TUTORIAL (Recuadro) */
+  tutorialButton: {
+    width: 140,
+    height: 60,
+    backgroundColor: 'rgba(192, 132, 182, 0.8)', // Color #c084b6 semi-transparente
+    borderWidth: 2,
+    borderColor: '#ead7e6',
+    borderRadius: 15, // Bordes redondeados pero sigue siendo rectangular
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  tutorialText: {
+    fontFamily: Fonts.sunshine,
+    fontSize: 28,
+    color: 'white',
   },
 
   volumeButton: {

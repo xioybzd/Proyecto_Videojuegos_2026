@@ -1,5 +1,5 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,6 +12,13 @@ export default function Cap1() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
   const chapterMusic = useRef<Audio.Sound | null>(null);
+
+  useEffect(() => {
+    cap1Scenes.forEach((scene) => {
+      const asset = Image.resolveAssetSource(scene.imagen);
+      if (asset?.uri) Image.prefetch(asset.uri);
+    });
+  }, []);
 
   const stopChapterMusic = async () => {
     try {
@@ -108,6 +115,7 @@ export default function Cap1() {
           source={cap1Scenes[escena].imagen}
           style={styles.image}
           resizeMode="cover"
+          fadeDuration={0}
         />
         <View style={styles.dialogo}>
           <Text style={styles.texto}>{cap1Scenes[escena].texto}</Text>
@@ -119,9 +127,9 @@ export default function Cap1() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'black' },
-  touchableArea: { flex: 1 },
-  image: { width: '100%', height: '100%' },
+  container: { flex: 1, backgroundColor: '#160f14' },
+  touchableArea: { flex: 1, backgroundColor: '#160f14' },
+  image: { width: '100%', height: '100%', backgroundColor: '#160f14' },
   dialogo: {
     position: 'absolute',
     bottom: 0,

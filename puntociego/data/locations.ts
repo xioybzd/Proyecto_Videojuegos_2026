@@ -89,6 +89,14 @@ export const locations: GameLocation[] = [
 
 export const locationUnlocks: LocationUnlock[] = [
   {
+    clueId: 'cap1_pista1',
+    lugarId: 'biblioteca-central',
+  },
+  {
+    lugarId: 'tubos',
+    prerequisiteRecuerdoId: 'cap2_recuerdo1',
+  },
+  {
     clueId: 'cel_pista_comedor',
     lugarId: 'comedor-sanmarquino',
   },
@@ -98,11 +106,11 @@ export const locationUnlocks: LocationUnlock[] = [
   },
   {
     clueId: 'cap5_pista1',
-    recuerdoId: 'cap5_recuerdo1',
+    lugarId: 'parque-asmaticos',
   },
   {
     clueId: 'cap6_pista1',
-    recuerdoId: 'cap6_recuerdo1',
+    lugarId: 'huaca',
   },
 ];
 

@@ -20,8 +20,8 @@ export const memories: GameItem[] = [
   {
     id: 'cap4_recuerdo1',
     titulo: 'Historia del NPC',
-    descripcion: 'Un encuentro breve deja una direccion clara: FCM.',
-    imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_14.jpg'),
+    descripcion: 'El estudiante del comedor confiesa que Janna dejo algo en FCM.',
+    imagen: require('@/assets/images/recuerdos/npc_cap/66.jpg'),
     capituloId: 'cap4',
     lugarId: 'npc-jarol',
   },
@@ -67,13 +67,28 @@ export const memoryScenes: Record<string, import('./types').ChapterScene[]> = {
   cap4_recuerdo1: [
     {
       id: 'cap4_recuerdo1_escena1',
-      imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_14.jpg'),
-      texto: 'NPC\nSi buscas el inicio, no mires donde todos miran.',
+      imagen: require('@/assets/images/recuerdos/npc_cap/66.jpg'),
+      texto: 'Azula\nTu estabas en el comedor.\n\nEstudiante\nNo se nada.',
     },
     {
       id: 'cap4_recuerdo1_escena2',
-      imagen: require('@/assets/images/capituloimgs/capitulo4/cap4_15.jpg'),
-      texto: 'NPC\nFCM guarda una parte de la historia que Janna no quiso decir en voz alta.',
+      imagen: require('@/assets/images/recuerdos/npc_cap/67.jpg'),
+      texto: 'Azula\nMe hablaste de Ben.\n\nEstudiante\nYo no dije nada.\n\nAzula\nDijiste que estaba con ellos.',
+    },
+    {
+      id: 'cap4_recuerdo1_escena3',
+      imagen: require('@/assets/images/recuerdos/npc_cap/68.jpg'),
+      texto: 'Estudiante\nTodos lo vimos.\n\nAzula\nA Ben?\n\nEstudiante\nA Ben... o a alguien como el.',
+    },
+    {
+      id: 'cap4_recuerdo1_escena4',
+      imagen: require('@/assets/images/recuerdos/npc_cap/69.jpg'),
+      texto: 'Azula\nQue vio Janna?\n\nEstudiante\nSi quieres saber que vio Janna... ve a la FCM.\n\nAzula\nLa Facultad de Ciencias Matematicas?\n\nEstudiante\nElla dejo algo ahi.',
+    },
+    {
+      id: 'cap4_recuerdo1_escena5',
+      imagen: require('@/assets/images/recuerdos/npc_cap/70.jpg'),
+      texto: 'Azula\nQue cosa?\n\nEstudiante\nUn archivo.\n\nAzula\nCon quien?\n\nEstudiante\nCon el chico que sabe de computadoras.\n\nAzula\nJhon.\n\nEstudiante\nYo no te dije nada.',
     },
   ],
 };
