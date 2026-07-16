@@ -5,10 +5,15 @@ import { Fonts } from '@/constants/fonts';
 import { cap5Scenes } from '@/data/chapters';
 import { getClueById } from '@/data/clues';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
+import { useChapterAudio } from '@/hooks/use-chapter-audio';
 
 export default function Cap5() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const { chapterMusic, stopChapterMusic } = useChapterAudio(
+    require('@/assets/sounds/cap5_music.mp3')
+  );
 
   useEffect(() => {
     cap5Scenes.forEach((scene) => {
@@ -17,9 +22,11 @@ export default function Cap5() {
     });
   }, []);
 
-  const terminarCapitulo = () => {
+  const terminarCapitulo = async () => {
     const pista = getClueById('cap5_pista1');
     if (!pista) return;
+
+    await stopChapterMusic();
 
     router.push({
       pathname: '/recompensa',

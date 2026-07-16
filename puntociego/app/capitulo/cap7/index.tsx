@@ -4,10 +4,15 @@ import { router } from 'expo-router';
 import { Fonts } from '@/constants/fonts';
 import { cap7Scenes } from '@/data/chapters';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
+import { useChapterAudio } from '@/hooks/use-chapter-audio';
 
 export default function Cap7() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const { chapterMusic, stopChapterMusic } = useChapterAudio(
+    require('@/assets/sounds/cap7_music.mp3')
+  );
 
   useEffect(() => {
     cap7Scenes.forEach((scene) => {

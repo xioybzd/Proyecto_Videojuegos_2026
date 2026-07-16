@@ -5,10 +5,15 @@ import { Fonts } from '@/constants/fonts';
 import { cap2Scenes } from '@/data/chapters';
 import { getMemoryById } from '@/data/memories';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
+import { useChapterAudio } from '@/hooks/use-chapter-audio';
 
 export default function Cap2() {
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const { chapterMusic, stopChapterMusic } = useChapterAudio(
+    require('@/assets/sounds/cap2_music.mp3')
+  );
 
   useEffect(() => {
     cap2Scenes.forEach((scene) => {
@@ -17,9 +22,11 @@ export default function Cap2() {
     });
   }, []);
 
-  const terminarCapitulo = () => {
+  const terminarCapitulo = async () => {
     const recuerdo = getMemoryById('cap2_recuerdo1');
     if (!recuerdo) return;
+
+    await stopChapterMusic();
 
     router.push({
       pathname: '/recompensa',
@@ -67,7 +74,7 @@ export default function Cap2() {
           <Text style={styles.texto}>{cap2Scenes[escena].texto}</Text>
         </View>
       </TouchableOpacity>
-      <ChapterVolumeControl />
+      <ChapterVolumeControl musicRef={chapterMusic}/>
     </View>
   );
 }

@@ -5,12 +5,17 @@ import { Fonts } from '@/constants/fonts';
 import { GameContext } from '@/context/GameContext';
 import { cap3Scenes } from '@/data/chapters';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
+import { useChapterAudio } from '@/hooks/use-chapter-audio';
 
 export default function Cap3() {
   const { desbloquearCelular } = useContext(GameContext);
   const { aparicionGlitch } = useContext(GameContext);
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const { chapterMusic, stopChapterMusic } = useChapterAudio(
+    require('@/assets/sounds/cap3_music.mp3')
+  );
 
   useEffect(() => {
     cap3Scenes.forEach((scene) => {
@@ -19,9 +24,12 @@ export default function Cap3() {
     });
   }, []);
 
-  const terminarCapitulo = () => {
+  const terminarCapitulo = async () => {
     desbloquearCelular();
     aparicionGlitch();
+
+    await stopChapterMusic();
+
     router.replace('/(tabs)/mapa');
   };
 

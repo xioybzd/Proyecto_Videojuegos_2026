@@ -5,11 +5,16 @@ import { Fonts } from '@/constants/fonts';
 import { GameContext } from '@/context/GameContext';
 import { cap4Scenes } from '@/data/chapters';
 import { ChapterVolumeControl } from '@/components/ChapterVolumeControl';
+import { useChapterAudio } from '@/hooks/use-chapter-audio';
 
 export default function Cap4() {
   const { marcarCapituloCompletado } = useContext(GameContext);
   const [escena, setEscena] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const { chapterMusic, stopChapterMusic } = useChapterAudio(
+      require('@/assets/sounds/cap4_music.mp3')
+    );
 
   useEffect(() => {
     cap4Scenes.forEach((scene) => {
@@ -18,7 +23,9 @@ export default function Cap4() {
     });
   }, []);
 
-  const terminarCapitulo = () => {
+  const terminarCapitulo = async () => {
+    await stopChapterMusic();
+
     marcarCapituloCompletado('cap4');
     router.replace('/(tabs)/mapa');
   };
