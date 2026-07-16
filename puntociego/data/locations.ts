@@ -109,8 +109,8 @@ export const locationUnlocks: LocationUnlock[] = [
     lugarId: 'parque-asmaticos',
   },
   {
-    clueId: 'cap6_pista1',
     lugarId: 'huaca',
+    prerequisiteRecuerdoId: 'cap6_recuerdo1',
   },
 ];
 

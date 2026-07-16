@@ -35,9 +35,9 @@ export const memories: GameItem[] = [
   },
   {
     id: 'cap6_recuerdo1',
-    titulo: 'Ultima coordenada',
-    descripcion: 'La Huaca queda como el ultimo punto de la historia.',
-    imagen: require('@/assets/images/capituloimgs/capitulo1/portadah1c1.jpg'),
+    titulo: 'El llavero de conejito',
+    descripcion: 'El llavero de Janna guarda una nota que apunta a la Huaca.',
+    imagen: require('@/assets/images/recuerdos/recuerdo2/recuerdo2_01.jpg'),
     capituloId: 'cap6',
     lugarId: 'huaca',
   },
@@ -89,6 +89,28 @@ export const memoryScenes: Record<string, import('./types').ChapterScene[]> = {
       id: 'cap4_recuerdo1_escena5',
       imagen: require('@/assets/images/recuerdos/npc_cap/70.jpg'),
       texto: 'Azula\nQue cosa?\n\nEstudiante\nUn archivo.\n\nAzula\nCon quien?\n\nEstudiante\nCon el chico que sabe de computadoras.\n\nAzula\nJhon.\n\nEstudiante\nYo no te dije nada.',
+    },
+  ],
+  cap6_recuerdo1: [
+    {
+      id: 'cap6_recuerdo1_escena1',
+      imagen: require('@/assets/images/recuerdos/recuerdo2/recuerdo2_01.jpg'),
+      texto: 'Janna\nNo debi seguirlos sola...',
+    },
+    {
+      id: 'cap6_recuerdo1_escena2',
+      imagen: require('@/assets/images/recuerdos/recuerdo2/recuerdo2_02.jpg'),
+      texto: 'Janna\nAzula tiene que saberlo...',
+    },
+    {
+      id: 'cap6_recuerdo1_escena3',
+      imagen: require('@/assets/images/recuerdos/recuerdo2/recuerdo2_03.jpg'),
+      texto: 'Azula encuentra una nota doblada dentro del llavero.\n\n"Nos encontramos en la Huaca."',
+    },
+    {
+      id: 'cap6_recuerdo1_escena4',
+      imagen: require('@/assets/images/recuerdos/recuerdo2/recuerdo2_04.jpg'),
+      texto: 'La nota continua:\n\n"Si no vuelvo, no fue un accidente."\n\nAzula (susurrando)\nLa Huaca...\n\nTengo que ir.',
     },
   ],
 };
