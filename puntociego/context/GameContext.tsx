@@ -6,6 +6,7 @@ type GameContextType = {
   recuerdos: GameItem[];
   lugaresVisitados: string[];
   capitulosCompletados: string[];
+  conversacionesCelularVistas: string[];
   celularDesbloqueado: boolean;
   glitchAparecio: boolean;
   memoriaRecuperada: number;
@@ -13,6 +14,7 @@ type GameContextType = {
   agregarRecuerdo: (r: GameItem) => void;
   marcarLugarVisitado: (lugarId: string) => void;
   marcarCapituloCompletado: (capituloId: string) => void;
+  marcarConversacionCelularVista: (conversacionId: string) => void;
   desbloquearCelular: () => void;
   aparicionGlitch: () => void;
 };
@@ -22,6 +24,7 @@ export const GameContext = createContext<GameContextType>({
   recuerdos: [],
   lugaresVisitados: [],
   capitulosCompletados: [],
+  conversacionesCelularVistas: [],
   celularDesbloqueado: false,
   glitchAparecio: false,
   memoriaRecuperada: 0,
@@ -29,6 +32,7 @@ export const GameContext = createContext<GameContextType>({
   agregarRecuerdo: () => {},
   marcarLugarVisitado: () => {},
   marcarCapituloCompletado: () => {},
+  marcarConversacionCelularVista: () => {},
   desbloquearCelular: () => {},
   aparicionGlitch: () => {},
 });
@@ -38,6 +42,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [recuerdos, setRecuerdos] = useState<GameItem[]>([]);
   const [lugaresVisitados, setLugaresVisitados] = useState<string[]>([]);
   const [capitulosCompletados, setCapitulosCompletados] = useState<string[]>([]);
+  const [conversacionesCelularVistas, setConversacionesCelularVistas] = useState<string[]>([]);
   const [celularDesbloqueado, setCelularDesbloqueado] = useState(false);
   const [glitchAparecio, setAparicionGlitch] = useState(false);
 
@@ -73,6 +78,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const marcarConversacionCelularVista = (conversacionId: string) => {
+    setConversacionesCelularVistas((prev) => {
+      if (prev.includes(conversacionId)) return prev;
+      return [...prev, conversacionId];
+    });
+  };
+
   const desbloquearCelular = () => {
     setCelularDesbloqueado(true);
   };
@@ -88,6 +100,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         recuerdos,
         lugaresVisitados,
         capitulosCompletados,
+        conversacionesCelularVistas,
         celularDesbloqueado,
         glitchAparecio,
         memoriaRecuperada,
@@ -95,6 +108,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         agregarRecuerdo,
         marcarLugarVisitado,
         marcarCapituloCompletado,
+        marcarConversacionCelularVista,
         desbloquearCelular,
         aparicionGlitch,
       }}

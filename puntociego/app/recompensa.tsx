@@ -10,7 +10,7 @@ import type { RewardType } from '@/data/types';
 
 export default function Recompensa() {
   const params = useLocalSearchParams();
-  const { agregarPista, agregarRecuerdo } = useContext(GameContext);
+  const { agregarPista, agregarRecuerdo, marcarCapituloCompletado } = useContext(GameContext);
 
   const tipo = params.tipo as RewardType;
   const id = params.id as string;
@@ -56,9 +56,11 @@ export default function Recompensa() {
 
     if (tipo === 'recuerdo') {
       agregarRecuerdo(item);
+      if (item.capituloId) marcarCapituloCompletado(item.capituloId);
       router.replace('/(tabs)/recuerdos');
     } else {
       agregarPista(item);
+      if (item.capituloId) marcarCapituloCompletado(item.capituloId);
       router.replace('/(tabs)/pistas');
     }
   };

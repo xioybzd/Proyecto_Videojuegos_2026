@@ -54,6 +54,7 @@ export default function MapaScreen() {
     recuerdos,
     lugaresVisitados,
     capitulosCompletados,
+    conversacionesCelularVistas,
     celularDesbloqueado,
     glitchAparecio,
     marcarLugarVisitado,
@@ -75,11 +76,13 @@ export default function MapaScreen() {
             recuerdos.some((recuerdo) => recuerdo.id === unlock.prerequisiteRecuerdoId)) &&
           (!unlock.prerequisiteChapterId ||
             capitulosCompletados.includes(unlock.prerequisiteChapterId)) &&
+          (!unlock.prerequisiteConversationId ||
+            conversacionesCelularVistas.includes(unlock.prerequisiteConversationId)) &&
           (!('recuerdoId' in unlock) ||
             !recuerdos.some((recuerdo) => recuerdo.id === unlock.recuerdoId)) &&
           (!('lugarId' in unlock) || !lugaresVisitados.includes(unlock.lugarId))
       ),
-    [pistas, recuerdos, lugaresVisitados, capitulosCompletados]
+    [pistas, recuerdos, lugaresVisitados, capitulosCompletados, conversacionesCelularVistas]
   );
 
   const recuerdoObjetivo =
@@ -103,13 +106,36 @@ export default function MapaScreen() {
     [lugarObjetivoId]
   );
 
+  const phoneHintText = useMemo(() => {
+    if (!celularDesbloqueado) return '';
+
+    if (capitulosCompletados.includes('cap6') && !conversacionesCelularVistas.includes('cap6')) {
+      return 'El conejito vibra... hay una nota recuperada en el celular.';
+    }
+
+    if (capitulosCompletados.includes('cap5') && !conversacionesCelularVistas.includes('cap5')) {
+      return 'Hay otra conversacion antigua. Revisala antes de seguir.';
+    }
+
+    if (capitulosCompletados.includes('cap4') && !conversacionesCelularVistas.includes('cap4')) {
+      return 'Janna dejo mas mensajes. Mira el celular antes de buscar al chico.';
+    }
+
+    if (!pistas.some((pista) => pista.id === 'cel_pista_comedor')) {
+      return 'Deberias revisar el celular. Hay algo nuevo de Janna.';
+    }
+
+    return '';
+  }, [celularDesbloqueado, capitulosCompletados, conversacionesCelularVistas, pistas]);
+
   const ubicacionNPC = useMemo(() => {
     const cap4Completado = capitulosCompletados.includes('cap4');
+    const conversacionCap4Vista = conversacionesCelularVistas.includes('cap4');
     const recuerdoNPCDesbloqueado = recuerdos.some((r) => r.id === 'cap4_recuerdo1');
 
-    if (!cap4Completado || recuerdoNPCDesbloqueado) return undefined;
+    if (!cap4Completado || !conversacionCap4Vista || recuerdoNPCDesbloqueado) return undefined;
     return locations_npc.find((locationNpc) => locationNpc.capituloID === 'cap4');
-  }, [capitulosCompletados, recuerdos]);
+  }, [capitulosCompletados, conversacionesCelularVistas, recuerdos]);
 
   const distanciaObjetivo =
     playerLocation && ubicacionObjetivo?.coordenadas
@@ -548,6 +574,32 @@ export default function MapaScreen() {
         visible={celularDesbloqueado}
         onPress={() => router.push('/celular')}
       />
+
+      {phoneHintText && (
+        <TouchableOpacity
+          style={styles.phoneHint}
+          activeOpacity={0.86}
+          onPress={() => router.push('/celular')}
+        >
+          <Image
+            source={
+              glitchAparecio
+                ? require('@/assets/images/glitched/perfil_glitched.png')
+                : require('@/assets/images/perfil.png')
+            }
+            style={styles.phoneHintIcon}
+          />
+          <View style={[
+            styles.phoneHintBubble,
+            glitchAparecio && styles.phoneHintBubbleGlitch,
+          ]}>
+            <Text style={[
+              styles.phoneHintText,
+              glitchAparecio && styles.phoneHintTextGlitch,
+            ]}>{phoneHintText}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -690,6 +742,48 @@ const styles = StyleSheet.create({
   playImage: {
     width: '100%',
     height: '100%',
+  },
+
+  phoneHint: {
+    position: 'absolute',
+    top: '34%',
+    left: 14,
+    right: 88,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  phoneHintIcon: {
+    width: 54,
+    height: 54,
+    borderRadius: 14,
+  },
+
+  phoneHintBubble: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 242, 248, 0.94)',
+    borderColor: '#c084b6',
+    borderWidth: 2,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+
+  phoneHintBubbleGlitch: {
+    backgroundColor: 'rgba(39, 1, 1, 0.94)',
+    borderColor: '#fd0000',
+  },
+
+  phoneHintText: {
+    fontFamily: Fonts.sunshine,
+    color: '#4d2f42',
+    fontSize: 18,
+    lineHeight: 22,
+  },
+
+  phoneHintTextGlitch: {
+    color: '#f2d7d7',
   },
 
   markerContainer: {

@@ -4,12 +4,14 @@ type LocationUnlock =
   | {
       clueId?: string;
       recuerdoId: string;
+      prerequisiteConversationId?: string;
       prerequisiteRecuerdoId?: string;
       prerequisiteChapterId?: string;
     }
   | {
       clueId?: string;
       lugarId: string;
+      prerequisiteConversationId?: string;
       prerequisiteRecuerdoId?: string;
       prerequisiteChapterId?: string;
     };
@@ -106,10 +108,12 @@ export const locationUnlocks: LocationUnlock[] = [
   },
   {
     clueId: 'cap5_pista1',
+    prerequisiteConversationId: 'cap5',
     lugarId: 'parque-asmaticos',
   },
   {
     lugarId: 'huaca',
+    prerequisiteConversationId: 'cap6',
     prerequisiteRecuerdoId: 'cap6_recuerdo1',
   },
 ];

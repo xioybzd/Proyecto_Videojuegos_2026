@@ -1,5 +1,4 @@
-import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Fonts } from '@/constants/fonts';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 type PhoneButtonProps = {
   visible: boolean;
@@ -15,9 +14,11 @@ export function PhoneButton({ visible, onPress }: PhoneButtonProps) {
       activeOpacity={0.85}
       onPress={onPress}
     >
-      <View style={styles.speaker} />
-      <Text style={styles.icon}>✦</Text>
-      <View style={styles.home} />
+      <Image 
+        source={require('@/assets/images/celular.png')} 
+        style={styles.logoImage}
+        resizeMode="contain"
+      />
     </TouchableOpacity>
   );
 }
@@ -29,35 +30,16 @@ const styles = StyleSheet.create({
     top: '36%',
     width: 58,
     height: 104,
-    borderRadius: 17,
-    backgroundColor: '#f3c8d8',
-    borderWidth: 3,
-    borderColor: '#84596b',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 9,
+    justifyContent: 'center',
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.28,
     shadowRadius: 5,
   },
-  speaker: {
-    width: 22,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#84596b',
-  },
-  icon: {
-    fontFamily: Fonts.sunshine,
-    color: '#84596b',
-    fontSize: 28,
-  },
-  home: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 2,
-    borderColor: '#84596b',
+  logoImage: {
+    width: '100%',
+    height: '100%',
   },
 });
