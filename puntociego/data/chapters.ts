@@ -341,67 +341,67 @@ export const cap5Scenes: ChapterScene[] = [
   {
     id: 'cap5_escena1',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_01.jpg'),
-    texto: 'FCM no parecia una respuesta.\n\nParecia una advertencia.',
+    texto: 'Azula observa la Facultad de Ciencias Matematicas buscando a alguien.',
   },
   {
     id: 'cap5_escena2',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_02.jpg'),
-    texto: 'Azula\nSi Janna dejo algo aqui, alguien tuvo que verlo.',
+    texto: 'Jhon\nSi vienes por ayuda emocional... estoy en mantenimiento.\n\nAzula\nJhon, necesito preguntarte algo sobre Janna.',
   },
   {
     id: 'cap5_escena3',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_03.jpg'),
-    texto: 'El lugar estaba demasiado tranquilo para todo lo que escondia.',
+    texto: 'Jhon\nQue paso?\n\nAzula\nMe dijeron que te dejo un archivo.',
   },
   {
     id: 'cap5_escena4',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_04.jpg'),
-    texto: 'Cada pasillo parecia devolverme una version distinta de la misma duda.',
+    texto: 'Azula\nPor que no me dijiste nada?\n\nJhon\nPorque Janna me pidio que no lo hiciera...\n\nHasta estar seguro.\n\nAzula\nSeguro de que?',
   },
   {
     id: 'cap5_escena5',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_05.jpg'),
-    texto: 'Janna habia seguido el rastro mucho antes que yo.',
+    texto: 'Jhon\nMe pidio que desencriptara esto.\n\nSi algo le pasaba... no debia borrarlo.',
   },
   {
     id: 'cap5_escena6',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_06.jpg'),
-    texto: 'Y si ella llego hasta aqui...\n\nEntonces no estaba imaginando nada.',
+    texto: 'Azula\nY que hay ahi?',
   },
   {
     id: 'cap5_escena7',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_07.jpg'),
-    texto: 'Azula\nJhon... que encontraste?',
+    texto: 'Janna (audio del video)\nNo es solo alcohol...',
   },
   {
     id: 'cap5_escena8',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_08.jpg'),
-    texto: 'El archivo no tenia nombre claro.\n\nSolo una marca repetida.',
+    texto: 'El video se congela.\n\nArchivo danado.',
   },
   {
     id: 'cap5_escena9',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_09.jpg'),
-    texto: 'La misma señal.\n\nEl mismo error.',
+    texto: 'Azula\nQuien es el?\n\nJhon\nNo se su nombre.\n\nPero aparece en varias fotos.',
   },
   {
     id: 'cap5_escena10',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_10.jpg'),
-    texto: 'No era una pista dejada al azar.',
+    texto: 'Azula\nDonde es eso?\n\nJhon\nParece el Parque de los Asmaticos.\n\nAzula\nEl que?\n\nJhon\nAsi le dicen.\n\nDe noche algunos van ahi para tomar, fumar... o esconderse.',
   },
   {
     id: 'cap5_escena11',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_11.jpg'),
-    texto: 'Era una direccion.',
+    texto: 'El lugar despierta algo incompleto en la memoria de Azula.',
   },
   {
     id: 'cap5_escena12',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_12.jpg'),
-    texto: 'Parque Asmaticos.',
+    texto: 'Janna (audio)\nLo segui desde Tubos...\n\nSe encontraron cerca del parque...\n\nBen estaba...\n\n(El audio se corta.)',
   },
   {
     id: 'cap5_escena13',
     imagen: require('@/assets/images/capituloimgs/capitulo5/cap5_13.jpg'),
-    texto: 'Si queria entender lo que Janna vio...\n\ntenia que seguir caminando.',
+    texto: 'Azula\nRepite eso.\n\nJhon\nEsta corrupto.\n\nPuedo intentar recuperar mas... pero necesito tiempo.\n\nAzula\nJanna vio a Ben ahi.\n\nJhon\nAzula...\n\nAzula\nLo vio, Jhon.',
   },
 ];
 
